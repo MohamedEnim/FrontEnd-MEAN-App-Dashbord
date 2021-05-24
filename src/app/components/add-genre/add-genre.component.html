@@ -1,0 +1,26 @@
+
+
+
+<div class="add__genre__container">
+    <form [formGroup]="addGenreForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        
+        <div class="add__genre__formGroupe">
+            <label for="name">Genre</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter genre</mat-label>
+                <input matInput
+                 placeholder="Enter the Genre"  
+                 formControlName="name">
+                <mat-error 
+                *ngIf="!addGenreForm.get('name').valid && addGenreForm.get('name').touched">Enter genre</mat-error>
+            </mat-form-field>
+        </div>
+
+          
+        <button mat-stroked-button color="primary" [disabled]="!addGenreForm.valid">Submit</button>
+    </form>
+</div>
+
+
+
+  

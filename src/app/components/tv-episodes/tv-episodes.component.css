@@ -1,0 +1,10 @@
+
+.add-tvEpisode__formGroupe{
+    display: flex;
+    flex-direction: column;   
+}
+.add-tvEpisode__container{
+    width: 80%;
+    margin-bottom: 30px;
+    margin-left: 10%;
+}

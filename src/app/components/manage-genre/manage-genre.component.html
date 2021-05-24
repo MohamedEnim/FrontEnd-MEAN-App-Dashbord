@@ -1,0 +1,54 @@
+
+
+  <div class="header">
+    <button mat-raised-button class="btn-add" (click)="onNavigateToAddGenre()">Add Genre</button>
+    <div class="feed-form-group">
+      <label class="search">Search</label>
+      <mat-form-field appearance="outline">
+        <input matInput  placeholder="Search genre" #input>
+      </mat-form-field>
+    </div>
+  </div>
+ 
+  
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+  
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear > Name </th>
+        <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+      </ng-container>
+
+       <!-- Update date Column -->
+       <ng-container matColumnDef="update" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disabled></th>
+        <td mat-cell *matCellDef="let row"> 
+          <button mat-flat-button (click)="onUpdateGenre(row._id)" class="btn-update">update</button>    
+        </td>
+      </ng-container> 
+
+      <!-- Remove date Column -->
+      <ng-container matColumnDef="remove" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header disabled></th>
+        <td mat-cell *matCellDef="let row"> 
+          <button mat-flat-button color="warn" (click)="onRemoveGenre(row._id)">remove</button>
+        </td>
+      </ng-container> 
+
+      
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+      </tr>
+    </table>
+  
+    <mat-paginator [length]="length"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="pageSizeOptions">
+    </mat-paginator>
+  </div>

@@ -1,0 +1,15 @@
+
+
+.add-tvshow__formGroupe{
+    display: flex;
+    flex-direction: column;   
+}
+.add-tvshow__container{
+    width: 80%;
+    margin-bottom: 30px;
+    margin-left: 10%;
+}
+
+input[type="file"] {
+    visibility: hidden;
+  }

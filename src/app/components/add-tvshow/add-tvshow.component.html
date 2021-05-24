@@ -1,0 +1,120 @@
+
+
+<div class="add-tvshow__container">
+    <form [formGroup]="addTVShowForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        
+        <div class="add-tvshow__formGroupe">
+            <label for="name">Name of the TV Show</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the name of the TV show</mat-label>
+                <input matInput
+                 placeholder="Enter the name of the TV show"  
+                 formControlName="name">
+                <mat-error 
+                *ngIf="!addTVShowForm.get('name').valid && addTVShowForm.get('name').touched">Enter the name of the TV show</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="genre">Select genre of the movie</label>
+            <mat-form-field appearance="outline" >
+            <mat-label>Select the genre of the movie</mat-label>
+            <mat-select 
+            formControlName="genre"
+            multiple>
+                <mat-option *ngFor="let genre of genres" [value]="genre._id" 
+                >
+                {{ genre.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error
+            *ngIf="!addTVShowForm.get('genre').valid && addTVShowForm.get('genre').touched">Select the genre of the movie</mat-error>
+            </mat-form-field>
+        </div>
+        <div class="add-tvshow__formGroupe">
+            <label for="language">Language of the TV Show</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the language of the TV Show</mat-label>
+                <input matInput 
+                placeholder="Enter the language of the TV Show"
+                formControlName="language">
+                <mat-error 
+                *ngIf="!addTVShowForm.get('language').valid && addTVShowForm.get('language').touched">Enter the language of theTV Show</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="contry">Contry of the TV Show</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the contry of the TV Show</mat-label>
+                <input matInput 
+                placeholder="Enter the contry of the TV Show"
+                formControlName="contry"
+>
+                <mat-error 
+                *ngIf="!addTVShowForm.get('contry').valid && addTVShowForm.get('contry').touched">Enter the contry of the TV Show</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="url">Season of the TV Show</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the season of the TV Show</mat-label>
+                <input matInput 
+                placeholder="Enter the season of the TV Show"
+                formControlName="season"
+                type="number">
+                <mat-error 
+                *ngIf="!addTVShowForm.get('season').valid && addTVShowForm.get('season').touched">Enter the season of the TV Show</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="release">Release date of the TV Show </label>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the release date of the TV Show</mat-label>
+                <input matInput [matDatepicker]="picker"
+                placeholder="Enter the Release date of the TV Show"
+                formControlName="release">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error 
+                *ngIf="!addTVShowForm.get('release').valid && addTVShowForm.get('release').touched">Enter the Release date of the TV Show</mat-error>
+              </mat-form-field>
+
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="duration">How many Episodes in the TV Show</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter How many Episodes in the TV Show</mat-label>
+                <input matInput 
+                placeholder="Enter How many Episodes in the TV Show"
+                formControlName="episode"
+                type="number">
+                <mat-error 
+                *ngIf="!addTVShowForm.get('episode').valid && addTVShowForm.get('episode').touched">Enter How many Episodes in the TV Show</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="description">Description of the movie</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                    <mat-label>Enter the description of the movie</mat-label>
+                    <textarea matInput
+                    formControlName="description" rows="4"></textarea>
+                  </mat-form-field>
+                <mat-error 
+                *ngIf="!addTVShowForm.get('description').valid && addTVShowForm.get('description').touched">Enter the Description</mat-error>  
+        </div>
+
+        <div class="add-tvshow__formGroupe">
+            <label for="poster">Poster of the movie</label>
+            <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Poster</button>
+            <input type="file" #filePicker (change)="onImagePicked($event)">     
+        </div>
+
+        <button mat-stroked-button color="primary">Submit</button>
+    </form>
+</div>

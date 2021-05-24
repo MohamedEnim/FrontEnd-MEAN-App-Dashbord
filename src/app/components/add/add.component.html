@@ -1,0 +1,125 @@
+
+<div class="add__container">
+    <form [formGroup]="addForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        
+        <div class="add__formGroupe">
+            <label for="name">Name of the movie</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the name of the movie</mat-label>
+                <input matInput
+                 placeholder="Enter the Name"  
+                 formControlName="name">
+                <mat-error 
+                *ngIf="!addForm.get('name').valid && addForm.get('name').touched">Enter the name of the movie</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="genre">Select genre of the movie</label>
+            <mat-form-field appearance="outline" >
+            <mat-label>Select the genre of the movie</mat-label>
+            <mat-select 
+            formControlName="genre"
+            multiple>
+                <mat-option *ngFor="let genre of genres" [(value)]="genre.name">
+                {{ genre.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error
+            *ngIf="!addForm.get('genre').valid && addForm.get('genre').touched">Select the genre of the movie</mat-error>
+            </mat-form-field>
+        </div>
+
+    
+
+        <div class="add__formGroupe">
+            <label for="language">Language of the movie</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the language of the movie</mat-label>
+                <input matInput 
+                placeholder="Enter the language of the movie"
+                formControlName="language">
+                <mat-error 
+                *ngIf="!addForm.get('language').valid && addForm.get('language').touched">Enter the language of the movie</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="contry">Contry of the movie</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the contry of the movie</mat-label>
+                <input matInput 
+                placeholder="Enter the contry of the movie"
+                formControlName="contry"
+>
+                <mat-error 
+                *ngIf="!addForm.get('contry').valid && addForm.get('contry').touched">Enter the contry of the movie</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="url">Url of the movie</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the Url of the movie</mat-label>
+                <input matInput 
+                placeholder="Enter the Url of the movie"
+                formControlName="url">
+                <mat-error 
+                *ngIf="!addForm.get('url').valid && addForm.get('url').touched">Enter the Url of the movie</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="release">Release date of the movie </label>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the release date of the movie</mat-label>
+                <input matInput [matDatepicker]="picker"
+                placeholder="Enter the Release date of the movie"
+                formControlName="release">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error 
+                *ngIf="!addForm.get('release').valid && addForm.get('release').touched">Enter the Release date of the movie</mat-error>
+              </mat-form-field>
+
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="duration">Duration of the movie</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the duration of the movie</mat-label>
+                <input matInput 
+                placeholder="Enter the duration of the movie"
+                formControlName="duration"
+                type="time">
+                <mat-error 
+                *ngIf="!addForm.get('duration').valid && addForm.get('duration').touched">Enter the duration of the movie</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="description">Description of the movie</label>
+                <mat-form-field appearance="outline" class="example-full-width">
+                    <mat-label>Enter the description of the movie</mat-label>
+                    <textarea matInput
+                    formControlName="description" rows="4"></textarea>
+                  </mat-form-field>
+                <mat-error 
+                *ngIf="!addForm.get('description').valid && addForm.get('description').touched">Enter the Description</mat-error>  
+        </div>
+
+        <div class="add__formGroupe">
+            <label for="poster">Poster of the movie</label>
+            <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Poster</button>
+            <input type="file" #filePicker (change)="onImagePicked($event)">
+           
+          </div>
+          
+        <button mat-stroked-button color="primary" [disabled]="!addForm.valid">Submit</button>
+    </form>
+</div>
+
+
+
+  

@@ -1,0 +1,13 @@
+
+
+
+.add__genre__formGroupe{
+    display: flex;
+    flex-direction: column;   
+}
+.add__genre__container{
+    width: 80%;
+    margin-bottom: 30px;
+    margin-left: 10%;
+}
+

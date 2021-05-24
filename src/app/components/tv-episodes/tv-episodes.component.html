@@ -1,0 +1,21 @@
+
+
+<div class="add-tvEpisode__container">
+    <form [formGroup]="addTVEpisodeForm" (ngSubmit)="onSubmit()">
+        
+        <div class="add-tvEpisode__formGroupe">
+            <label for="url">Url of the TV Episode</label>
+            <mat-form-field appearance="outline">
+                <mat-label>Enter the Url of the TV Episode</mat-label>
+                <input matInput 
+                placeholder="Enter the Url of the TV Episode"
+                formControlName="url">
+                <mat-error 
+                *ngIf="!addTVEpisodeForm.get('url').valid && addTVEpisodeForm.get('url').touched">Enter the Url of the TV Episode</mat-error>
+              </mat-form-field>
+        </div>
+
+  
+        <button mat-stroked-button color="primary">Submit</button>
+    </form>
+</div>
