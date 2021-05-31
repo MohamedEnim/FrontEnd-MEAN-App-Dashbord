@@ -1,33 +1,58 @@
 
 
   <div class="app__container">
-  <div class="login__container">
+     <div class="login__container">
     <mat-card>
       <mat-card-header>
         <h2>Login</h2>
       </mat-card-header>
       <mat-divider></mat-divider>
       <mat-card-content>
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <form  (ngSubmit)="onSubmit()" #loginForm="ngForm">
          
           <mat-error *ngIf="loginInvalid">
             The username and password were not recognized
           </mat-error>
-          <mat-form-field class="full-width-input">
-            <input matInput placeholder="Email" formControlName="username" required>
-            <mat-error>
+          
+          <div class="login__formGroupe">
+            <label for="name">E-mail</label>
+          <mat-form-field class="full-width-input"  appearance="outline">
+            
+            <mat-label>E-mail</mat-label>
+            <input matInput 
+            type="email"
+            placeholder="E-mail" 
+            name="email"
+            [(ngModel)]="inputEmail"
+            #errEmail="ngModel"
+            required>
+            <mat-error *ngIf="!errEmail.valid && errEmail.touched">
               Please provide a valid email address
             </mat-error>
           </mat-form-field>
-          <mat-form-field class="full-width-input">
-            <input matInput type="password" placeholder="Password" formControlName="password" required>
-            <mat-error>
+        </div>
+
+        <div class="login__formGroupe">
+          <label for="name">Password</label>
+          <mat-form-field class="full-width-input" appearance="outline">
+            <mat-label>password</mat-label>
+            <input matInput 
+            type="password" 
+            placeholder="Password" 
+            name="password"
+            [(ngModel)]="inputPassword"
+            #errPassword="ngModel"
+            required>
+            <mat-error *ngIf="!errPassword.valid && errPassword.touched">
               Please provide a valid password
             </mat-error>
           </mat-form-field>
+        </div>
+
           <button mat-raised-button color="primary">Login</button>
+
         </form>
       </mat-card-content>
     </mat-card>
-    </div>
-    </div>
+     </div>
+  </div>

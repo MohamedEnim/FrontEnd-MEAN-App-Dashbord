@@ -1,10 +1,17 @@
 
 .add-tvEpisode__formGroupe{
     display: flex;
-    flex-direction: column;   
+    flex-direction: column;  
 }
 .add-tvEpisode__container{
     width: 80%;
     margin-bottom: 30px;
     margin-left: 10%;
 }
+
+/****x***********************************************x****/
+/*********************Submit Btn Section******************/
+.btn{
+    display: flex;
+    flex-direction: row-reverse;
+}  

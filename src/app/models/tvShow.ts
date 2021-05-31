@@ -8,7 +8,6 @@ export class TVShow{
     tvShowSeason: string;
     tvShowReleaseDate: string;
     tvShowEpisodes: string;
-    tvShowDescription: string;
     tvShowPoster: string;
     createdAt: string;
     updatedAt?: string;

@@ -4,10 +4,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { TVEpisode } from 'src/app/models/tvEpisode';
+import { TVShow } from 'src/app/models/tvShow';
 import { TvEpisodeService } from 'src/app/services/tv-episode.service';
+import { TvShowService } from 'src/app/services/tv-show.service';
 import { TvEpisodesComponent } from '../tv-episodes/tv-episodes.component';
 
 
@@ -22,7 +24,7 @@ export class ManageEpisodeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort; 
 
-  displayedColumns: string[] = ['tvShowName', 'tvShowReleaseDate', 'tvEpisodeNum', 'tvEpisodeUrl',  'createdAt', 'updatedAt', 'update', 'remove'];
+  displayedColumns: string[] = ['tvEpisodeNum', 'tvEpisodeUrl',  'createdAt', 'updatedAt', 'actions'];
   dataSource: MatTableDataSource<TVEpisode>;
   tvEpisodes: TVEpisode[] = [];
   sendTVEpisodesSub: Subscription;
@@ -31,22 +33,32 @@ export class ManageEpisodeComponent implements OnInit {
   length: number;
   pageSize: number = 10;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  tvEpisodeId: string = null;
+  tvShowId: string = null;
+  tvShowName: string;
+  tvShowSeason: string
+  tvShow: TVShow;
+  tvShowEpsNum: string;
+  epsArray: number[];
 
-  constructor(private tvEpisodeSErv: TvEpisodeService, private route: ActivatedRoute, public dialog: MatDialog) { }
+  constructor(private tvEpisodeSErv: TvEpisodeService, private route: ActivatedRoute, public dialog: MatDialog,
+    private tvShowSErv: TvShowService) { }
 
   ngOnInit(): void {
     
     this.route.queryParamMap.pipe(switchMap((params: ParamMap) => {
-      this.tvEpisodeId = params.get('id');
-     
-      if(this.tvEpisodeId !== null){
-        return this.tvEpisodeSErv.getTVEpisodeById(this.tvEpisodeId);   //TO DO  
-      }else {
-       
-        return this.tvEpisodeSErv.getTVEpisodes();
-      }
+      this.tvShowId = params.get('id');
+        return this.tvShowSErv.getTVShowById(this.tvShowId);
+      
+    }), switchMap((tvShow: TVShow) => {
+        this.tvShow = tvShow;
+        this.tvShowName = this.tvShow.tvShowName;
+        this.tvShowSeason= this.tvShow.tvShowSeason;
+        this.tvShowEpsNum = this.tvShow.tvShowEpisodes;
+        this.epsArray = this.getEpisodesArray(this.tvShowEpsNum);
+        return this.tvEpisodeSErv.getTVEpisodesById(this.tvShowId);       
+
     })).subscribe((tvEpisodes: TVEpisode[]) => {
+   
     this.tvEpisodes = tvEpisodes;
     this.length = this.tvEpisodes.length;
     this.dataSource = new MatTableDataSource<TVEpisode>(tvEpisodes);
@@ -62,46 +74,35 @@ export class ManageEpisodeComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-   
-  }
 
- /* tableToString(genres: [string]){
-    let genresSTR: string = '';
-    for(let genre of genres){
-      genresSTR += genre + ', ';
-    }
-   let editGenresSTR = genresSTR.slice(0, -2);
-    return editGenresSTR;
-  }*/
-
-  onUpdateTVEpisode(tvEpisode: TVEpisode){
-   // this.tvEpisodeSErv.onUpdateTVEpisode(tvEpisodeId); //TO DO
-   let dialogRef = this.dialog.open(TvEpisodesComponent, {
-    height: '400px',
-    width: '600px',
-    data: {
-      tvEpisode: tvEpisode, 
-      mode: 'create'
-    }
-  });
-
+  onUpdateTVEpisode(tvEpisode: string){
+    this.tvEpisodeSErv.onUpdateTVEpisode(tvEpisode, this.tvShowId);
   }
 
   onRemoveTVEpisode(tvEpisodeId: string){
-    this.tvEpisodeSErv.onRemoveTVEpisode(tvEpisodeId);  //TO DO
+    this.tvEpisodeSErv.onRemoveTVEpisode(tvEpisodeId, this.tvShowId);  //TO DO
   }
 
   onNavigateToAddTVEpisode(){
-   // this.tvEpisodeSErv.onNavigateToAddTVEpisode(); //TO DO
-  /* let dialogRef = this.dialog.open(TvEpisodesComponent, {
-    height: '400px',
-    width: '600px',
-    data: {
-      tvEpisode: , 
-      mode: 'create'
-    }
-  });  */
+    this.tvEpisodeSErv.onNavigateToAddTVEpisode(this.tvShowId);
+  }
+
+private getEpisodesArray(epsNumStr: string){
+  const epsNumInt: number = parseInt(epsNumStr);
+  let epsArray: number[] = [];
+  for(let i=1; i<= epsNumInt; i++){
+    epsArray.push(i);
+  }
+  return epsArray;
+}
+
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
+onNavigateToAddSeason(){
+  this.tvEpisodeSErv.onNavigateToAddSeason(this.tvShowId);
 }
 
   ngOnDestroy(){

@@ -11,3 +11,10 @@
     margin-left: 10%;
 }
 
+
+/****x***********************************************x****/
+/*********************Submit Btn Section******************/
+.btn{
+    display: flex;
+    flex-direction: row-reverse;
+}  

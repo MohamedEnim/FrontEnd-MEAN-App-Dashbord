@@ -1,10 +1,13 @@
 
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {  NgForm } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { TVEpisode } from 'src/app/models/tvEpisode';
 import { TVShow } from 'src/app/models/tvShow';
 import { TvEpisodeService } from 'src/app/services/tv-episode.service';
+import { TvShowService } from 'src/app/services/tv-show.service';
 
 @Component({
   selector: 'app-tv-episodes',
@@ -13,102 +16,129 @@ import { TvEpisodeService } from 'src/app/services/tv-episode.service';
 })
 export class TvEpisodesComponent implements OnInit {
  
+  @ViewChild('addTVEpisodeForm') addTVEpisodeForm: NgForm;
   episodesNum: number;
-  addTVEpisodeForm: FormGroup;
   tvEpisodeToUpdate: TVEpisode;
-  private mode = "create";
+  mode = "create";
+  episodeNum: number = 1;
+  tvShowId: string;
+  tvEpisodeId: string;
+  tvShow: TVShow;
+  urlTvEpisode: string;
+  numEpisode: string;
 
-  constructor(public dialogRef: MatDialogRef<TvEpisodesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: {tvShow: TVShow, mode: string, tvEpisode: TVEpisode},  private tvEpisodeSErv: TvEpisodeService) { }
+  constructor(private tvEpisodeSErv: TvEpisodeService, private route: ActivatedRoute,
+     private addTVShowSErv: TvShowService) { }
 
   ngOnInit(): void {
-    this.episodesNum = parseInt(this.data.tvShow.tvShowEpisodes);
-    this.addTVEpisodeForm = new FormGroup({
-      url: new FormControl(null, Validators.required),
+    this.route.queryParamMap.pipe(switchMap((params: ParamMap) => {
+      this.tvShowId = params.get('id');
+      this.tvEpisodeId = params.get('episodeId');
+      this.mode = params.get('mode');
+      return this.addTVShowSErv.getTVShowById(this.tvShowId);
+    }), switchMap((tvShow: TVShow) => {
+      this.tvShow = tvShow;
+      this.episodesNum = parseInt(this.tvShow.tvShowEpisodes);
+      
+
+      if(this.mode === 'update'){
+        return this.tvEpisodeSErv.getTVEpisodeById(this.tvEpisodeId);
+      } else if(this.mode === 'add'){
+        this.numEpisode = (parseInt(tvShow.tvShowEpisodes) + 1).toString();
+        return of(null);
+      } else { 
+        return of(null);
+      }
+
+    })).subscribe((data: any) => {
+      if(this.mode === 'update'){
+          this.episodeNum = data.tvEpisodeNum;
+          this.urlTvEpisode = data.tvEpisodeUrl;
+      } 
     });
-    if(this.data.mode === 'update'){
-      this.mode = this.data.mode;
-            this.tvEpisodeSErv.getTVEpisodeById(this.data.tvEpisode._id).subscribe((tvEpisode: TVEpisode) => {
-                this.tvEpisodeToUpdate = tvEpisode;
-                this.addTVEpisodeForm.setValue({
-                  url: this.tvEpisodeToUpdate.tvEpisodeUrl,
-                });
-            });
-    } else { 
-      this.mode = this.data.mode;
-    }
-   console.log(this.mode);
+  
   }
 
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
+  
   onSubmit(){
     if (this.mode === "create") {
       if(this.episodesNum !== 1){   
         let tvEpisode: TVEpisode = {
-          tvShowName: this.data.tvShow.tvShowName,
-          tvShowId: this.data.tvShow._id,
-          tvShowPoster: this.data.tvShow.tvShowPoster,
-          tvShowSeason: this.data.tvShow.tvShowSeason,
-          tvShowReleaseDate: this.data.tvShow.tvShowReleaseDate,
+          tvShowName: this.tvShow.tvShowName,
+          tvShowId: this.tvShow._id,
+          tvShowPoster: this.tvShow.tvShowPoster,
+          tvShowSeason: this.tvShow.tvShowSeason,
+          tvShowReleaseDate: this.tvShow.tvShowReleaseDate,
           tvEpisodeUrl: this.addTVEpisodeForm.value.url,
-          tvEpisodeNum: String(this.episodesNum),
-          tvEpisodeLanguage: this.data.tvShow.tvShowLanguage,
-          tvEpisodeContry: this.data.tvShow.tvShowContry,
+          tvEpisodeNum: String(this.episodeNum),
+          tvEpisodeLanguage: this.tvShow.tvShowLanguage,
+          tvEpisodeContry: this.tvShow.tvShowContry,
           createdAt: this.tvEpisodeSErv.getTimeStamp().toString(),
           updatedAt: ''
         }
         this.episodesNum -= 1;
-        this.tvEpisodeSErv.addTVEpisode(tvEpisode, this.episodesNum).subscribe((data) =>{
-          this.resetFormAddTVEpisode(this.addTVEpisodeForm);
+        this.episodeNum +=1;
+        this.tvEpisodeSErv.addTVEpisode(tvEpisode).subscribe((data) =>{
+          this.addTVEpisodeForm.resetForm();
         });
       }else{
         let tvEpisode: TVEpisode = {
-          tvShowName: this.data.tvShow.tvShowName,
-          tvShowId: this.data.tvShow._id,
-          tvShowPoster: this.data.tvShow.tvShowPoster,
-          tvShowSeason: this.data.tvShow.tvShowSeason,
-          tvShowReleaseDate: this.data.tvShow.tvShowReleaseDate,
+          tvShowName: this.tvShow.tvShowName,
+          tvShowId: this.tvShow._id,
+          tvShowPoster: this.tvShow.tvShowPoster,
+          tvShowSeason: this.tvShow.tvShowSeason,
+          tvShowReleaseDate: this.tvShow.tvShowReleaseDate,
           tvEpisodeUrl: this.addTVEpisodeForm.value.url,
           tvEpisodeNum: String(this.episodesNum),
-          tvEpisodeLanguage: this.data.tvShow.tvShowLanguage,
-          tvEpisodeContry: this.data.tvShow.tvShowContry,
+          tvEpisodeLanguage: this.tvShow.tvShowLanguage,
+          tvEpisodeContry: this.tvShow.tvShowContry,
           createdAt: this.tvEpisodeSErv.getTimeStamp().toString(),
           updatedAt: ''
         }
-        this.tvEpisodeSErv.addTVEpisode(tvEpisode, this.episodesNum).subscribe((data) =>{
-          this.onClose();
+        this.tvEpisodeSErv.addTVEpisode(tvEpisode).subscribe((data) =>{
+        this.tvEpisodeSErv.onNavigateToAddTVShow();
         });
           
       } 
-    } else {
+    }else if(this.mode === "add"){
       let tvEpisode: TVEpisode = {
-        tvShowName: this.data.tvShow.tvShowName,
-        tvShowId: this.data.tvShow._id,
-        tvShowPoster: this.data.tvShow.tvShowPoster,
-        tvShowSeason: this.data.tvShow.tvShowSeason,
-        tvShowReleaseDate: this.data.tvShow.tvShowReleaseDate,
+        tvShowName: this.tvShow.tvShowName,
+        tvShowId: this.tvShow._id,
+        tvShowPoster: this.tvShow.tvShowPoster,
+        tvShowSeason: this.tvShow.tvShowSeason,
+        tvShowReleaseDate: this.tvShow.tvShowReleaseDate,
+        tvEpisodeUrl: this.urlTvEpisode,
+        tvEpisodeNum: this.numEpisode,
+        tvEpisodeLanguage: this.tvShow.tvShowLanguage,
+        tvEpisodeContry: this.tvShow.tvShowContry,
+        createdAt: this.tvEpisodeSErv.getTimeStamp().toString(),
+        updatedAt: ''
+      }
+      this.tvEpisodeSErv.addTVEpisodeTable(tvEpisode, this.episodesNum).subscribe((data) =>{
+        this.tvEpisodeSErv.onNavigateToTvEpisodes(this.tvShowId);
+      });
+    
+    }else {
+      let tvEpisode: TVEpisode = {
+        tvShowName: this.tvShow.tvShowName,
+        tvShowId: this.tvShow._id,
+        tvShowPoster: this.tvShow.tvShowPoster,
+        tvShowSeason: this.tvShow.tvShowSeason,
+        tvShowReleaseDate: this.tvShow.tvShowReleaseDate,
         tvEpisodeUrl: this.addTVEpisodeForm.value.url,
         tvEpisodeNum: String(this.episodesNum),
-        tvEpisodeLanguage: this.data.tvShow.tvShowLanguage,
-        tvEpisodeContry: this.data.tvShow.tvShowContry,
+        tvEpisodeLanguage: this.tvShow.tvShowLanguage,
+        tvEpisodeContry: this.tvShow.tvShowContry,
         createdAt: this.tvEpisodeToUpdate.createdAt,
         updatedAt: this.tvEpisodeSErv.getTimeStamp().toString()
       }
      
-       // this.tvEpisodeSErv.updateTVEpisode(this.tvEpisodeToUpdate._id, tvEpisode); // TO DO
+        this.tvEpisodeSErv.updateTVEpisode(this.tvEpisodeToUpdate._id, tvEpisode).subscribe((data) =>{
+         // this.onClose();
+        }); // TO DO
      
      
     }
-  }
-
-  private resetFormAddTVEpisode(formGroup: FormGroup) {
-    this.addTVEpisodeForm.reset();  
-    this.addTVEpisodeForm.get('url').clearValidators();
-    this.addTVEpisodeForm.get('url').updateValueAndValidity();
-   
   }
 
 }

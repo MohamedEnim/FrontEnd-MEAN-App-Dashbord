@@ -1,21 +1,42 @@
 
 
 <div class="add-tvEpisode__container">
-    <form [formGroup]="addTVEpisodeForm" (ngSubmit)="onSubmit()">
-        
-        <div class="add-tvEpisode__formGroupe">
-            <label for="url">Url of the TV Episode</label>
+    <form  (ngSubmit)="onSubmit()" #addTVEpisodeForm="ngForm">
+
+        <div class="add-tvEpisode__formGroupe" *ngIf="mode === 'add'">
+            <label for="episode">TV Episode number</label>
+            <mat-form-field appearance="outline">
+                <mat-label>TV Episode number</mat-label>
+                <input matInput 
+                placeholder="TV Episode number"
+                name="episode"
+                [(ngModel)]="numEpisode"
+                required
+                #num="ngModel">
+                <mat-error 
+                *ngIf="!num.valid && num.touched">Enter number of the TV Episode</mat-error>
+              </mat-form-field>
+        </div>
+
+        <div class="add-tvEpisode__formGroupe"> 
+            <label for="url" *ngIf="mode !== 'add'">Url of the TV Episode number {{ episodeNum }}</label>
+            <label for="url" *ngIf="mode === 'add'">Url of the TV Episode number {{ numEpisode }}</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the Url of the TV Episode</mat-label>
                 <input matInput 
                 placeholder="Enter the Url of the TV Episode"
-                formControlName="url">
+                name="url"
+                [(ngModel)]="urlTvEpisode"
+                required
+                #urlEpisode="ngModel">
                 <mat-error 
-                *ngIf="!addTVEpisodeForm.get('url').valid && addTVEpisodeForm.get('url').touched">Enter the Url of the TV Episode</mat-error>
+                *ngIf="!urlEpisode.valid && urlEpisode.touched">Enter the Url of the TV Episode</mat-error>
               </mat-form-field>
         </div>
 
-  
-        <button mat-stroked-button color="primary">Submit</button>
+        <div class="btn">
+             <button mat-stroked-button color="primary" [disabled]="!addTVEpisodeForm.valid">Submit</button>
+         </div>
+
     </form>
 </div>

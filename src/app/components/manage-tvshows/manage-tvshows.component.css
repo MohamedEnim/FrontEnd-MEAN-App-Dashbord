@@ -55,7 +55,9 @@ table {
   flex-direction: row;
   box-sizing: border-box;
   align-items: center;
-  width: 40%;
+  min-width: 40%;
+  
+  border: 2px solid blue;
   
 }
 
@@ -68,3 +70,15 @@ table {
 
 ::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.6em 0px !important;}
 
+@media (max-width: 815px){
+  .header{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid red;
+    }
+}

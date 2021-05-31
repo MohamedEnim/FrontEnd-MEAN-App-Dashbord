@@ -2,19 +2,22 @@
 
 <div class="add-tvshow__container">
     <form [formGroup]="addTVShowForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-        
+        <fieldset  disabled style="border: none">
         <div class="add-tvshow__formGroupe" >
+            
             <label for="name">Name of the TV Show</label>
             <mat-form-field appearance="outline" >
                 <mat-label>Enter the name of the TV show</mat-label>
                 <input matInput
                  placeholder="Enter the name of the TV show"  
                  formControlName="name"
-                 >
+                >
                 <mat-error 
                 *ngIf="!addTVShowForm.get('name').valid && addTVShowForm.get('name').touched">Enter the name of the TV show</mat-error>
             </mat-form-field>
+       
         </div>
+    </fieldset>
 
         <div class="add-tvshow__formGroupe">
             <label for="genre">Select genre of the movie</label>
@@ -111,8 +114,9 @@
         </div>
 
         <div class="btn">
-            <button mat-stroked-button type="button" (click)="onNavigateToAllTVShows()" color="warn" >Go To All Tv Shows</button>
+            <button mat-stroked-button type="button" (click)="onNavigateToAllTVShows()" color="warn">Back</button>
             <button mat-stroked-button color="primary" [disabled]="!addTVShowForm.valid" class="btn_submit">Submit</button>
         </div>  
     </form>
 </div>
+

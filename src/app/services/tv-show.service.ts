@@ -9,13 +9,9 @@ import { TVShow } from '../models/tvShow';
   providedIn: 'root'
 })
 export class TvShowService {
+  
 
-  updateTVShow(_id: string, tvShow: TVShow) {
-    throw new Error('Method not implemented.');
-  }
-  updateTVShowSamePoster(_id: string, tvShow: TVShow) {
-    throw new Error('Method not implemented.');
-  }
+  
   
   sendTVShows = new BehaviorSubject<TVShow[]>([]);
 
@@ -32,16 +28,10 @@ export class TvShowService {
     postData.append("tvShowSeason", tvShow.tvShowSeason.toString());
     postData.append("tvShowReleaseDate", tvShow.tvShowReleaseDate.toString());
     postData.append("tvShowEpisodes", tvShow.tvShowEpisodes.toString());
-    postData.append("tvShowDescription", tvShow.tvShowDescription);
     postData.append("image", tvShow.tvShowPoster, tvShow.tvShowName);
     postData.append("createdAt", tvShow.createdAt);
     postData.append("updatedAt", tvShow.updatedAt);
 
-    console.log(postData.getAll('tvShowGenres'));
-    console.log(postData.get('tvShowName'))
-    console.log(postData.get('image'))
-    
-    console.log(postData.get('tvShowSeason'))
 
    return this.http
       .post<TVShow>(
@@ -57,7 +47,6 @@ export class TvShowService {
           tvShowSeason: responseData.tvShowSeason,
           tvShowReleaseDate: responseData.tvShowReleaseDate,
           tvShowEpisodes: responseData.tvShowEpisodes,
-          tvShowDescription: responseData.tvShowDescription,
           tvShowPoster: responseData.tvShowPoster,
           createdAt: responseData.createdAt,
           updatedAt: responseData.updatedAt
@@ -87,7 +76,6 @@ export class TvShowService {
               tvShowSeason: data.tvShowSeason,
               tvShowReleaseDate: data.tvShowReleaseDate,
               tvShowEpisodes: data.tvShowEpisodes,
-              tvShowDescription: data.tvShowDescription,
               tvShowPoster: data.tvShowPoster,
               createdAt: data.createdAt,
               updatedAt: data.updatedAt
@@ -104,7 +92,6 @@ export class TvShowService {
               tvShowSeason: responseData[0].tvShowSeason,
               tvShowReleaseDate: responseData[0].tvShowReleaseDate,
               tvShowEpisodes: responseData[0].tvShowEpisodes,
-              tvShowDescription: responseData[0].tvShowDescription,
               tvShowPoster: responseData[0].tvShowPoster,
               createdAt: responseData[0].createdAt,
               updatedAt: responseData[0].updatedAt
@@ -121,7 +108,7 @@ export class TvShowService {
 
   getTimeStamp(){
     const now = new Date();
-    const date = now.getUTCDate()  + ',' + (now.getUTCMonth() + 1) + ',' + now.getUTCFullYear() ;
+    const date = now.getUTCDate()  + '-' + (now.getUTCMonth() + 1) + '-' + now.getUTCFullYear() ;
     const time = now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds();
      return (date + '/' + time);
   }
@@ -134,13 +121,16 @@ export class TvShowService {
     this.router.navigate(['/home/addTVShow'], {queryParams: {id: tvShowId, mode: 'update'}});
   }
 
+  onNavigateToTVShowEpisodes(tvShowId: string) {
+    this.router.navigate(['/home/allTVEpisodes'], {queryParams: {id: tvShowId}});
+  }
+
   onRemoveTVShow(tvShowId: string) {
-    this.http.delete<TVShow>( "http://localhost:3000/api/movies/" + tvShowId)
+    this.http.delete<TVShow>( "http://localhost:3000/api/tvShows/" + tvShowId)
     .pipe(switchMap((tvShow: TVShow) => {
       return this.getTVShows();
     })).subscribe((tvShows: TVShow[]) => {
-      this.sendTVShows.next(tvShows);
-      
+      this.sendTVShows.next(tvShows); 
     });
   }
 
@@ -159,7 +149,6 @@ export class TvShowService {
             tvShowSeason: responseData.tvShowSeason,
             tvShowReleaseDate: responseData.tvShowReleaseDate,
             tvShowEpisodes: responseData.tvShowEpisodes,
-            tvShowDescription: responseData.tvShowDescription,
             tvShowPoster: responseData.tvShowPoster,
             createdAt: responseData.createdAt,
             updatedAt: responseData.updatedAt
@@ -167,4 +156,36 @@ export class TvShowService {
       return tvShow;
     }));
   }
+
+  onNavigateToAllTVShows(){
+     this.router.navigate(['/home/allTVShows']);
+  }
+
+  updateTVShowSamePoster(tvShowId: string, tvShow: TVShow) {
+    return this.http.put<TVShow>( "http://localhost:3000/api/tvShows/samePoster/" + tvShowId, tvShow);
+  }
+
+  updateTVShow(tvShowId: string, tvShow: TVShow) {
+  
+    const postData = new FormData();
+    postData.append("tvShowName",tvShow.tvShowName);
+    for(let genre of tvShow.tvShowGenres){
+      postData.append("tvShowGenres", genre)
+    }
+    postData.append("tvShowLanguage", tvShow.tvShowLanguage);
+    postData.append("tvShowContry", tvShow.tvShowContry);
+    postData.append("tvShowSeason", tvShow.tvShowSeason.toString());
+    postData.append("tvShowReleaseDate", tvShow.tvShowReleaseDate.toString());
+    postData.append("tvShowEpisodes", tvShow.tvShowEpisodes.toString());
+    postData.append("image", tvShow.tvShowPoster, tvShow.tvShowName);
+    postData.append("createdAt", tvShow.createdAt);
+    postData.append("updatedAt", tvShow.updatedAt);
+
+     return this.http.put<TVShow>( "http://localhost:3000/api/tvShows/" + tvShowId, postData);
+  }
+
+  onNavigateToAddEpisode(tvShowId: string, mode: string){
+    this.router.navigate(['/home/addEpisode/'], {queryParams: {id: tvShowId, mode: mode}});
+  }
+ 
 }

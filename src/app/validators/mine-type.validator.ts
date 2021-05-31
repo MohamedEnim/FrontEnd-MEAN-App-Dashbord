@@ -20,7 +20,6 @@ export const mimeType = (
         for (let i = 0; i < arr.length; i++) {
           header += arr[i].toString(16);
         }
-        console.log(header)
         switch (header) {
           case "89504e47":
             isValid = true;
@@ -36,7 +35,7 @@ export const mimeType = (
             isValid = false; // Or you can use the blob.type as fallback
             break;
         }
-        console.log(isValid)
+       
         if (isValid) {
           observer.next(null);
         } else {

@@ -18,7 +18,7 @@ export class ManageTVShowsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort; 
 
-  displayedColumns: string[] = ['tvShowName', 'tvShowReleaseDate', 'tvShowGenres', 'episodes', 'createdAt', 'updatedAt', 'update', 'remove'];
+  displayedColumns: string[] = ['tvShowName', 'tvShowReleaseDate', 'tvShowGenres', 'season', 'createdAt', 'updatedAt', 'actions'];
   dataSource: MatTableDataSource<TVShow>;
   tvShows: TVShow[] = [];
   sendtvShowsSub: Subscription;
@@ -65,12 +65,26 @@ export class ManageTVShowsComponent implements OnInit {
     this.tvShowSErv.onUpdateTVShow(tvShowId);
   }
 
+  onNavigateToTVShowEpisodes(tvShowId: string){
+    this.tvShowSErv.onNavigateToTVShowEpisodes(tvShowId);
+  }
+
   onRemoveTVShow(tvhowId: string){
     this.tvShowSErv.onRemoveTVShow(tvhowId); 
   }
 
   onNavigateToAddTVShow(){
     this.tvShowSErv. onNavigateToAddTVShow();
+}
+
+getYear(date: string){
+  console.log(date)
+  return date.split('/')[2];
+}
+
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
 }
 
   ngOnDestroy(){

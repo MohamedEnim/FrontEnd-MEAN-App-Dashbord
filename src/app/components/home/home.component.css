@@ -1,6 +1,11 @@
 mat-toolbar {
     background: #004a9f;
     color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
   }
   .navbar__container{
   display: flex;
@@ -22,7 +27,7 @@ mat-toolbar {
     align-items: center;
   }
   mat-sidenav {
-    margin: 16px;
+    margin: 80px 16px 25px 16px;
     width: 200px;
     border-right: none;
     background: #002b5c;
@@ -30,6 +35,7 @@ mat-toolbar {
     border-radius: 10px;
     padding: 16px;
     text-align: center;
+    position: fixed;
   }
   
   .content {
@@ -38,9 +44,15 @@ mat-toolbar {
     margin-left: 28px;
     padding: 20px;
   }
+
+  mat-sidenav-content{
+    margin-top: 0px;
+  }
  
   mat-sidenav-container {
-    height: 100%;
+   
+    margin-top: 80px;
+    box-sizing: border-box;
   }
   
   .menu-button {
@@ -132,3 +144,26 @@ mat-toolbar {
   .mat-form-field + .mat-form-field {
     margin-left: 8px;
   }
+
+.vidly-column{
+  display: none;
+}
+  /*****/
+
+@media (max-width: 800px){
+  .vidly{
+    display: none;
+  }
+  .vidly-column{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+   
+    }
+
+    img, h4, p {
+      display: none;
+    }
+}
+
+

@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Movie } from '../models/movie';
 import { map, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
@@ -26,19 +25,22 @@ export class AddMovieService {
     postData.append("movieContry", movie.movieContry);
     postData.append("movieUrl", movie.movieUrl);
     postData.append("movieReleaseDate", movie.movieReleaseDate);
-    postData.append("movieDuration", movie.movieDuration);
-    postData.append("movieDescription", movie.movieDescription);
-    postData.append("movieSubmitDate", movie.movieSubmitDate);
-    postData.append("movieUpdateDate", movie.movieUpdateDate);
+    postData.append("duration", movie.duration);
+    postData.append("descriptionEN", movie.descriptionEN);
+    postData.append("descriptionAR", movie.descriptionAR);
+    postData.append("movieTrending", movie.movieTrending.toString());
+    postData.append("createAt", movie.createAt);
+    postData.append("updateAt", movie.updateAt);
     postData.append("image", movie.moviePoster, movie.movieName);
 
-    this.http
+    return this.http
       .post<Movie>(
         "http://localhost:3000/api/movies",
         postData
       )
-      .subscribe();
+     
   }
+
 
   getMovies() {
 
@@ -58,11 +60,13 @@ export class AddMovieService {
               movieContry: data.movieContry,
               movieUrl: data.movieUrl,
               movieReleaseDate: data.movieReleaseDate,
-              movieDuration: data.movieDuration,
-              movieDescription: data.movieDescription,
+              duration: data.duration,
+              descriptionEN: data.descriptionEN,
+              descriptionAR: data.descriptionAR,
+              movieTrending: data.movieTrending,
               moviePoster: data.moviePoster,
-              movieSubmitDate: data.movieSubmitDate,
-              movieUpdateDate: data.movieUpdateDate
+              createAt: data.createAt,
+              updateAt: data.updateAt
             };
             movies.push(movie);
           }
@@ -75,11 +79,13 @@ export class AddMovieService {
             movieContry: responseData[0].movieContry,
             movieUrl: responseData[0].movieUrl,
             movieReleaseDate: responseData[0].movieReleaseDate,
-            movieDuration: responseData[0].movieDuration,
-            movieDescription: responseData[0].movieDescription,
+            duration: responseData[0].duration,
+            descriptionEN: responseData[0].descriptionEN,
+            descriptionAR: responseData[0].descriptionAR,
+            movieTrending: responseData[0].movieTrending,
             moviePoster: responseData[0].moviePoster,
-            movieSubmitDate: responseData[0].movieSubmitDate,
-            movieUpdateDate: responseData[0].movieUpdateDate
+            createAt: responseData[0].createAt,
+            updateAt: responseData[0].updateAt
           }
           movies.push(movie);
         }else{
@@ -91,7 +97,66 @@ export class AddMovieService {
     
   }
 
-  getMoviesByGenre(genreId: string, genreName: string) {
+  /************Get Trending Movies**************** */
+  getTrendingMovies() {
+
+    return this.http
+      .get<Movie[]>(
+        "http://localhost:3000/api/movies/trending"
+      )
+      .pipe(map((responseData) => {
+        let movies: Movie[] = []
+        if(responseData.length > 1){
+          for(let data of responseData){
+            const movie: Movie = {
+              _id: data._id,
+              movieName: data.movieName,
+              movieGenres: data.movieGenres,
+              movieLanguage: data.movieLanguage,
+              movieContry: data.movieContry,
+              movieUrl: data.movieUrl,
+              movieReleaseDate: data.movieReleaseDate,
+              duration: data.duration,
+              descriptionEN: data.descriptionEN,
+              descriptionAR: data.descriptionAR,
+              movieTrending: data.movieTrending,
+              moviePoster: data.moviePoster,
+              createAt: data.createAt,
+              updateAt: data.updateAt
+            };
+            movies.push(movie);
+          }
+        } else if(responseData.length === 1) {
+          const movie: Movie = {
+            _id: responseData[0]._id,
+            movieName: responseData[0].movieName,
+            movieGenres: responseData[0].movieGenres,
+            movieLanguage: responseData[0].movieLanguage,
+            movieContry: responseData[0].movieContry,
+            movieUrl: responseData[0].movieUrl,
+            movieReleaseDate: responseData[0].movieReleaseDate,
+            duration: responseData[0].duration,
+            descriptionEN: responseData[0].descriptionEN,
+            descriptionAR: responseData[0].descriptionAR,
+            movieTrending: responseData[0].movieTrending,
+            moviePoster: responseData[0].moviePoster,
+            createAt: responseData[0].createAt,
+            updateAt: responseData[0].updateAt
+          }
+          movies.push(movie);
+        }else{
+          movies = [];
+        };
+       
+        return movies;
+      }));
+    
+  }
+
+
+
+  /********************************************* */
+ /* getMoviesByGenre(genreId: string, genreName: string) {
     console.log(genreName);
     return this.http
       .get<Movie[]>(
@@ -109,16 +174,17 @@ export class AddMovieService {
               movieContry: data.movieContry,
               movieUrl: data.movieUrl,
               movieReleaseDate: data.movieReleaseDate,
-              movieDuration: data.movieDuration,
-              movieDescription: data.movieDescription,
+              duration: data.duration,
+              descriptionEN: data.descriptionEN,
+              descriptionAR: data.descriptionAR,
+              movieTrending: data.movieTrending,
               moviePoster: data.moviePoster,
-              movieSubmitDate: data.movieSubmitDate,
-              movieUpdateDate: data.movieUpdateDate
+              createAt: data.createAt,
+              updateAt: data.updateAt
             };
             movies.push(movie);
           }
         } else if(responseData.length == 1){
-          console.log(responseData);
           const movie: Movie = {
             _id: responseData[0]._id,
             movieName: responseData[0].movieName,
@@ -127,11 +193,13 @@ export class AddMovieService {
             movieContry: responseData[0].movieContry,
             movieUrl: responseData[0].movieUrl,
             movieReleaseDate: responseData[0].movieReleaseDate,
-            movieDuration: responseData[0].movieDuration,
-            movieDescription: responseData[0].movieDescription,
+            duration: responseData[0].duration,
+            descriptionEN: responseData[0].descriptionEN,
+            descriptionAR: responseData[0].descriptionAR,
+            movieTrending: responseData[0].movieTrending,
             moviePoster: responseData[0].moviePoster,
-            movieSubmitDate: responseData[0].movieSubmitDate,
-            movieUpdateDate: responseData[0].movieUpdateDate
+            createAt: responseData[0].createAt,
+            updateAt: responseData[0].updateAt
           };
           movies.push(movie);
         }else{
@@ -139,19 +207,12 @@ export class AddMovieService {
         }
         return movies;
       }));
-     /* .subscribe((movies: Movie[]) => {
-        this.movies = movies;
-        this.sendMovies.next(this.movies);
-        this.router.navigate(["/home/movies"], {queryParams: {id: genreId ,genre: genreName}});
-        console.log(this.movies);
-      });*/
-      //this.router.navigate(["/home/movies"], {queryParams: {id: genreId ,genre: genreName}});
-  }
+  }*/
 
   getTimeStamp(){
     const now = new Date();
-    const date = now.getUTCDate()  + ',' + (now.getUTCMonth() + 1) + ',' + now.getUTCFullYear() ;
-    const time = now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds();
+    const date = now.getUTCDate()  + '-' + (now.getUTCMonth() + 1) + '-' + now.getUTCFullYear() ;
+    const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
      return (date + '/' + time);
   }
 
@@ -169,17 +230,19 @@ export class AddMovieService {
     postData.append("movieContry", movie.movieContry);
     postData.append("movieUrl", movie.movieUrl);
     postData.append("movieReleaseDate", movie.movieReleaseDate);
-    postData.append("movieDuration", movie.movieDuration);
-    postData.append("movieDescription", movie.movieDescription);
-    postData.append("movieSubmitDate", movie.movieSubmitDate);
-    postData.append("movieUpdateDate", movie.movieUpdateDate);
+    postData.append("duration", movie.duration);
+    postData.append("descriptionEN", movie.descriptionEN);
+    postData.append("descriptionAR", movie.descriptionAR);
+    postData.append("movieTrending", movie.movieTrending.toString());
+    postData.append("createAt", movie.createAt);
+    postData.append("updateAt", movie.updateAt);
     postData.append("image", movie.moviePoster, movie.movieName);
 
-     this.http.put<Movie>( "http://localhost:3000/api/movies/" + movieId, postData).subscribe();
+     return this.http.put<Movie>( "http://localhost:3000/api/movies/" + movieId, postData);
   }
 
   updateMovieSamePoster(movieId: string, movie: Movie){
-     this.http.put<Movie>( "http://localhost:3000/api/movies/samePoster/" + movieId, movie).subscribe();
+    return this.http.put<Movie>( "http://localhost:3000/api/movies/samePoster/" + movieId, movie);
   }
 
   getMoviesById(movieId: string) {
@@ -196,11 +259,13 @@ export class AddMovieService {
             movieContry: responseData.movieContry,
             movieUrl: responseData.movieUrl,
             movieReleaseDate: responseData.movieReleaseDate,
-            movieDuration: responseData.movieDuration,
-            movieDescription: responseData.movieDescription,
+            duration: responseData.duration,
+            descriptionEN: responseData.descriptionEN,
+            descriptionAR: responseData.descriptionAR,
+            movieTrending: responseData.movieTrending,
             moviePoster: responseData.moviePoster,
-            movieSubmitDate: responseData.movieSubmitDate,
-            movieUpdateDate: responseData.movieUpdateDate
+            createAt: responseData.createAt,
+            updateAt: responseData.updateAt
           };
          
         return movie;
@@ -214,11 +279,15 @@ export class AddMovieService {
       return this.getMovies();
     })).subscribe((movies: Movie[]) => {
       this.sendMovies.next(movies);
-      
     });
   }
 
   onNavigateToAddMovie(){
     this.router.navigate(['home/addMovie'],{queryParams: {mode: 'create'}});
 }
+
+onNavigateToAllMovies(){
+   this.router.navigate(['/home/allMovies']);
+}
+
 }

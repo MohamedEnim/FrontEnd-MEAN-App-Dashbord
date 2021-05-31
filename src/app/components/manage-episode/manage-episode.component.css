@@ -1,9 +1,51 @@
 
 
 
+.header{
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
 
+.left__header{
+  display: flex;
+  flex-direction: column;
+}
 
+.tools{
+  display: flex;
+  flex-direction: row;
+}
 
+.btn-add{
+  background-color: rgb(243, 243, 8);
+  color: white;
+  width: 110px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.right__header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-update{
+  background-color: rgb(17, 209, 17);
+  color: white;
+}
+
+.feed-form-group{
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  align-items: center;
+}
 
 table {
     width: 100%;
@@ -13,6 +55,7 @@ table {
     font-size: 14px;
     width: 100%;
   }
+
   
   /*td, th {
     width: 25%;
@@ -26,38 +69,16 @@ table {
   padding: 0 !important;
 }
 
-.btn-update{
-  background-color: rgb(17, 209, 17);
-  color: white;
-}
 
-.btn-add{
-  background-color: rgb(243, 243, 8);
-  color: white;
-  width: 100px;
-  height: 40px;
-}
 
-.header{
-  display: flex;
-  flex-direction: row;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
+
+
+
 :host::ng-deep .header .mat-form-field-wrapper{
   padding-bottom: 0px !important;
 }
 
-.feed-form-group{
-  display: flex;
-  flex-direction: row;
-  box-sizing: border-box;
-  align-items: center;
-  width: 40%;
-  
-}
+
 
 .search{
   font-size: 18px;

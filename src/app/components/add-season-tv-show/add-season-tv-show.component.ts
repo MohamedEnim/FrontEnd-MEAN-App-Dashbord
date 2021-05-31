@@ -1,27 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Genre } from 'src/app/models/genre';
 import { TVShow } from 'src/app/models/tvShow';
 import { GenresMoviesService } from 'src/app/services/genres-movies.service';
 import { TvShowService } from 'src/app/services/tv-show.service';
 import { mimeType } from 'src/app/validators/mine-type.validator';
-import { TvEpisodesComponent } from '../tv-episodes/tv-episodes.component';
-import * as _moment from 'moment';
-import { ComponontCanDeactivate } from 'src/app/models/componont-can-deactivate';
-//import { default as _rollupMoment } from 'moment';
-
-const moment = _moment; //_rollupMoment || _moment;
 
 @Component({
-  selector: 'app-add-tvshow',
-  templateUrl: './add-tvshow.component.html',
-  styleUrls: ['./add-tvshow.component.css']
+  selector: 'app-add-season-tv-show',
+  templateUrl: './add-season-tv-show.component.html',
+  styleUrls: ['./add-season-tv-show.component.css']
 })
-export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
+export class AddSeasonTvShowComponent implements OnInit {
 
   @ViewChild('photoInput') photoInput;
   addTVShowForm: FormGroup;
@@ -31,13 +24,14 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
   tvShowId: string;
   tvShowToUpdate: TVShow;
   isSubmited: boolean = false;
+  disable: boolean = true;
 
   constructor(private genresMoviesSErv: GenresMoviesService, private addTVShowSErv: TvShowService, 
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.addTVShowForm = new FormGroup({
-      name: new FormControl(null, Validators.required),
+      name: new FormControl(null , Validators.required),
       genre: new FormControl(null, Validators.required),
       language:  new FormControl(null, Validators.required),
       contry: new FormControl(null, Validators.required),
@@ -55,35 +49,14 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
     
       return this.genresMoviesSErv.getGenres();
     }), switchMap((genres: Genre[]) => {
-      this.genres = genres;
-      if(this.tvShowId !== null && this.mode === 'update'){
-        this.mode = 'update';
+      this.genres =  genres;
         return this.addTVShowSErv.getTVShowById(this.tvShowId);  
-      } 
-      else {
-        this.mode = 'create';
-        return of(null);
-      }
-
-    })).subscribe((data: any) => {
-      if(this.mode === 'update'){
-        this.tvShowToUpdate = data;
-        this.addTVShowForm.setValue({
-          name: this.tvShowToUpdate.tvShowName,
-          genre: this.tvShowToUpdate.tvShowGenres,      
-          language:  this.tvShowToUpdate.tvShowLanguage,
-          contry: this.tvShowToUpdate.tvShowContry,
-          season: this.tvShowToUpdate.tvShowSeason,
-          release: moment(this.tvShowToUpdate.tvShowReleaseDate),
-          episode: this.tvShowToUpdate.tvShowEpisodes,
-          image: this.tvShowToUpdate.tvShowPoster
-        });
-        this.imagePreview = this.tvShowToUpdate.tvShowPoster;
-      }else{
-        this.addTVShowForm.reset();
-      }
+    })).subscribe((tvShow: TVShow) => {
+        this.addTVShowForm.patchValue({
+          name: tvShow.tvShowName,
     });
-  }
+  });
+}
 
   onImagePicked(event: Event) {
     const file = (event.target as HTMLInputElement).files[0];
@@ -100,8 +73,8 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
     this.photoInput.nativeElement.value = '';
    }
 
-  onSubmit(){
-    if (this.mode === "create") {
+   onSubmit(){
+     console.log( this.addTVShowForm.value.name);
       let tvShow: TVShow = {
         tvShowName: this.addTVShowForm.value.name,
         tvShowGenres: this.addTVShowForm.value.genre,
@@ -124,65 +97,22 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
 
         this.addTVShowSErv.onNavigateToAddEpisode(tvShow._id, 'create');
         this.resetFormAddTVShow(this.addTVShowForm);
-        console.log(this.addTVShowForm.valid);
-        console.log(this.addTVShowForm.get('language').valid);
+      
 
       });
-
-
-    } else {
-      const tvShow: TVShow = {
-        _id: this.tvShowToUpdate._id,
-        tvShowName: this.addTVShowForm.value.name,
-        tvShowGenres: this.addTVShowForm.value.genre,
-        tvShowLanguage: this.addTVShowForm.value.language,
-        tvShowContry: this.addTVShowForm.value.contry,
-        tvShowSeason: this.addTVShowForm.value.season,
-        tvShowReleaseDate: this.addTVShowForm.value.release,//.format("DD/MM/YYYY/hh.mm.ss"),
-        tvShowEpisodes: this.addTVShowForm.value.episode,
-        tvShowPoster: this.addTVShowForm.value.image,
-        createdAt: this.tvShowToUpdate.createdAt,
-        updatedAt: this.addTVShowSErv.getTimeStamp().toString()
-      }; 
-      if(tvShow.tvShowPoster === this.tvShowToUpdate.tvShowPoster){
-        this.addTVShowSErv.updateTVShowSamePoster(this.tvShowToUpdate._id, tvShow).subscribe((tvShow: TVShow) => { 
-          this.addTVShowSErv.onNavigateToAllTVShows() ;
-        }); 
-      }else{
-        this.addTVShowSErv.updateTVShow(this.tvShowToUpdate._id, tvShow).subscribe((tvShow: TVShow) => { 
-          this.addTVShowSErv.onNavigateToAllTVShows() ;
-        });
-      }
-     
-    }
-
+    } 
    
-    
-  }
 
   onNavigateToAllTVShows(){
      this.addTVShowSErv.onNavigateToAllTVShows();
   }
 
   canDeactivate(): boolean {
-    if(this.mode === "create"){
       if(this.addTVShowForm.valid === true && this.isSubmited === false){
         return false;
       }else{
         return true;
-      }
-    }
-
-    if(this.mode === "update"){
-      if(this.addTVShowForm.valid === true && this.isSubmited === false){
-        return true;
-      } 
-      if(this.addTVShowForm.valid === true && this.isSubmited === true) {
-        return true;
-      }
-    }
-
-   
+      }  
   }
   
   private resetFormAddTVShow(formGroup: FormGroup) {
@@ -203,6 +133,5 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
     this.addTVShowForm.get('episode').clearValidators();
     this.addTVShowForm.get('episode').updateValueAndValidity();
   }
-  
 
 }

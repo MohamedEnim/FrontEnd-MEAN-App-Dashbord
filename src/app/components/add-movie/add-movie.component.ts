@@ -1,4 +1,4 @@
-import { Component,  OnInit } from '@angular/core';
+import { Component,  OnDestroy,  OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup,  Validators } from '@angular/forms';
 import { Genre } from 'src/app/models/genre';
 import { Movie } from 'src/app/models/movie';
@@ -6,22 +6,20 @@ import { AddMovieService } from 'src/app/services/add-movie.service';
 import { GenresMoviesService } from 'src/app/services/genres-movies.service';
 import { mimeType } from '../../validators/mine-type.validator';
 import * as _moment from 'moment';
-//import { default as _rollupMoment } from 'moment';
-
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import {  of } from 'rxjs';
+import { ComponontCanDeactivate } from 'src/app/models/componont-can-deactivate';
 
 
 
-const moment = _moment; //_rollupMoment || _moment;
 
 @Component({
-  selector: 'app-add',
-  templateUrl: './add.component.html',
-  styleUrls: ['./add.component.css'],
+  selector: 'app-add-movie',
+  templateUrl: './add-movie.component.html',
+  styleUrls: ['./add-movie.component.css'],
   providers: [
     
     {
@@ -35,29 +33,36 @@ const moment = _moment; //_rollupMoment || _moment;
     },
   ],
 })
-export class AddComponent implements OnInit {
+export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactivate {
   
+  @ViewChild('photoInput') photoInput;
   addForm: FormGroup;
   genres: Genre[] = [];
-  imagePreview: string;
-  private mode = "create";
+  imagePreview: string = null;
+  mode = "create";
   movieId: string;
   movieToUpdate: Movie;
- 
+  isSubmited: boolean = false;
+  isTrending: boolean = false;
 
   constructor(private genresMoviesSErv: GenresMoviesService, private addMovieSErv: AddMovieService,
     private route: ActivatedRoute) { }
+ 
+  
 
   ngOnInit(): void {
+   
     this.addForm = new FormGroup({
       name: new FormControl(null, Validators.required),
       genre: new FormControl([null], Validators.required),      
       language:  new FormControl(null, Validators.required),
       contry: new FormControl(null, Validators.required),
       url: new FormControl(null, Validators.required),
-      release: new FormControl(moment([null]), Validators.required),
+      release: new FormControl(new Date(), Validators.required),
       duration: new FormControl(null, Validators.required),
-      description: new FormControl(null, Validators.required),
+      descriptionEN: new FormControl(null),
+      descriptionAR: new FormControl(null),
+      trending: new FormControl('false'),
       image: new FormControl(null, {
         validators: [Validators.required],
         asyncValidators: [mimeType]
@@ -78,20 +83,25 @@ export class AddComponent implements OnInit {
       }
 
     })).subscribe((data: any) => {
-      console.log(this.mode);
       if(this.mode === 'update'){
         this.movieToUpdate = data;
+        let date = this.getStringToDate(this.movieToUpdate.movieReleaseDate);
         this.addForm.setValue({
           name: this.movieToUpdate.movieName,
           genre: this.movieToUpdate.movieGenres,      
           language:  this.movieToUpdate.movieLanguage,
           contry: this.movieToUpdate.movieContry,
           url: this.movieToUpdate.movieUrl,
-          release: moment(this.movieToUpdate.movieReleaseDate),
-          duration: this.movieToUpdate.movieDuration,
-          description: this.movieToUpdate.movieDescription,
+          release: new Date(parseInt(date.year), parseInt(date.month), parseInt(date.day)),
+          duration: this.movieToUpdate.duration,
+          descriptionEN: this.movieToUpdate.descriptionEN,
+          descriptionAR: this.movieToUpdate.descriptionAR,
+          trending: this.movieToUpdate.movieTrending,
           image: this.movieToUpdate.moviePoster
         });
+
+        this.imagePreview = this.movieToUpdate.moviePoster;
+      
       }else{
         this.addForm.reset();
     }
@@ -106,11 +116,31 @@ export class AddComponent implements OnInit {
     reader.onload = () => {
       this.imagePreview = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file); 
   }
 
+ 
+ clearPictureAttachment() {
+  this.photoInput.nativeElement.value = '';
+ }
+
+ onNavigateToAllMovies(){
+   this.addMovieSErv.onNavigateToAllMovies();
+ }
 
   onSubmit(){
+    
+    const { date, month, year } = this.addForm.value.release._i;
+    const dateTf =  date + ',' + month  +  ',' + year;
+
+    let descriptionEN = this.addForm.value.descriptionEN? this.addForm.value.descriptionEN : '';
+    let descriptionAR = this.addForm.value.descriptionAR? this.addForm.value.descriptionAR : '';
+
+  if(this.addForm.value.trending === null || this.addForm.value.trending === false){
+    this.isTrending =  false
+  }else{
+    this.isTrending = true;
+  }
     if (this.mode === "create") {
       let movie: Movie = {
         movieName: this.addForm.value.name,
@@ -118,14 +148,22 @@ export class AddComponent implements OnInit {
         movieLanguage: this.addForm.value.language,
         movieContry: this.addForm.value.contry,
         movieUrl: this.addForm.value.url,
-        movieReleaseDate: this.addForm.value.release.format("DD/MM/YYYY/hh.mm.ss"),
-        movieDuration: this.addForm.value.duration,
-        movieDescription: this.addForm.value.description,
+        movieReleaseDate: dateTf,
+        duration: this.addForm.value.duration,
+        descriptionEN: descriptionEN,
+        descriptionAR: descriptionAR,
+        movieTrending: this.isTrending,
         moviePoster: this.addForm.value.image,
-        movieSubmitDate: this.addMovieSErv.getTimeStamp().toString(),
-        movieUpdateDate: ''
+        createAt: this.addMovieSErv.getTimeStamp().toString(),
+        updateAt: ''
       }
-     this.addMovieSErv.addMovie(movie);
+      this.isSubmited = true;
+      this.addMovieSErv.addMovie(movie).subscribe((movie: Movie) => {
+      this.isSubmited = false;
+      this.clearPictureAttachment();
+      this.imagePreview = null;
+      this.resetFormAddMovie(this.addForm); 
+     });
     } else {
      let movie: Movie = {
        _id: this.movieToUpdate._id,
@@ -134,25 +172,31 @@ export class AddComponent implements OnInit {
         movieLanguage: this.addForm.value.language,
         movieContry: this.addForm.value.contry,
         movieUrl: this.addForm.value.url,
-        movieReleaseDate: this.addForm.value.release.format("DD/MM/YYYY/hh.mm.ss"),
-        movieDuration: this.addForm.value.duration,
-        movieDescription: this.addForm.value.description,
+        movieReleaseDate:  dateTf,
+        duration: this.addForm.value.duration,
+        descriptionEN: descriptionEN,
+        descriptionAR: descriptionAR,
+        movieTrending: this.isTrending,
         moviePoster: this.addForm.value.image,
-        movieSubmitDate: this.movieToUpdate.movieSubmitDate,
-        movieUpdateDate: this.addMovieSErv.getTimeStamp().toString()
+        createAt: this.movieToUpdate.createAt,
+        updateAt: this.addMovieSErv.getTimeStamp().toString()
       }
+      
+      this.isSubmited = true;
       if(movie.moviePoster === this.movieToUpdate.moviePoster){
-        this.addMovieSErv.updateMovieSamePoster(this.movieToUpdate._id, movie);
+        this.addMovieSErv.updateMovieSamePoster(this.movieToUpdate._id, movie).subscribe((movie: Movie) => { 
+          this.addMovieSErv.onNavigateToAllMovies();
+        });
       }else{
-        this.addMovieSErv.updateMovie(this.movieToUpdate._id, movie);
+        this.addMovieSErv.updateMovie(this.movieToUpdate._id, movie).subscribe((movie: Movie) => {     
+          this.addMovieSErv.onNavigateToAllMovies();
+        });
       }
      
-    }
-    this.resetFormAdd(this.addForm);
-    
+    } 
   }
   
-  private resetFormAdd(formGroup: FormGroup) {
+  private resetFormAddMovie(formGroup: FormGroup) {
     this.addForm.reset();  
     this.addForm.get('name').clearValidators();
     this.addForm.get('name').updateValueAndValidity();
@@ -168,10 +212,48 @@ export class AddComponent implements OnInit {
     this.addForm.get('release').updateValueAndValidity();
     this.addForm.get('duration').clearValidators();
     this.addForm.get('duration').updateValueAndValidity();
-    this.addForm.get('description').clearValidators();
-    this.addForm.get('description').updateValueAndValidity();
-  //  this.addForm.get('image').clearValidators();
-   // this.addForm.get('image').updateValueAndValidity();
+    this.addForm.get('descriptionEN').clearValidators();
+    this.addForm.get('descriptionEN').updateValueAndValidity();
+    this.addForm.get('release').clearValidators();
+    this.addForm.get('release').updateValueAndValidity();
+
+    this.addForm.get('descriptionAR').clearValidators();
+    this.addForm.get('descriptionAR').updateValueAndValidity();
   }
 
+  canDeactivate(): boolean {
+    if(this.mode === "create"){
+      if(this.addForm.valid === true && this.isSubmited === false){
+        return false;
+      }else{
+        return true;
+      }
+    }
+
+    if(this.mode === "update"){
+      if(this.addForm.valid === true && this.isSubmited === false){
+        return true;
+      } 
+      if(this.addForm.valid === true && this.isSubmited === true) {
+        return true;
+      }
+    }
+
+   
+  }
+
+  getStringToDate(dateStr: string){
+     let date = {
+      day: dateStr.split(',')[0],
+      month: dateStr.split(',')[1],
+      year: dateStr.split(',')[2],
+    }
+    return date
+  }
+  ngOnDestroy(): void {
+  }
+ 
 }
+
+
+

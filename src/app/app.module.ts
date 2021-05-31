@@ -12,8 +12,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { UsersComponent } from './components/users/users.component';
-import { FeedComponent } from './components/feed/feed.component';
-import { AddComponent } from './components/add/add.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -27,9 +25,9 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatMenuModule} from '@angular/material/menu';
 import {  HoverDropDownDirective } from './directives/hover-drop-down.directive';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AddTvshowComponent } from './components/add-tvshow/add-tvshow.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { TvEpisodesComponent } from './components/tv-episodes/tv-episodes.component';
@@ -37,27 +35,38 @@ import { TvEpisodesComponent } from './components/tv-episodes/tv-episodes.compon
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
-import { ManageGenreComponent } from './components/manage-genre/manage-genre.component';
+
 import { AddGenreComponent } from './components/add-genre/add-genre.component';
 import { ManageTVShowsComponent } from './components/manage-tvshows/manage-tvshows.component';
 import { ManageEpisodeComponent } from './components/manage-episode/manage-episode.component';
+import { MatTableResponsiveModule } from './directives/mat-table-responsive/mat-table-responsive.module';
+import { ManageMoviesComponent } from './components/manage-movies/manage-movies.component';
+import { AddMovieComponent } from './components/add-movie/add-movie.component';
+import { DisableControlDirective } from './directives/disable-control.directive';
+import { AddSeasonTvShowComponent } from './components/add-season-tv-show/add-season-tv-show.component';
+import { ManageTrendingComponent } from './components/manage-trending/manage-trending.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { InterceptService } from './services/intercept.service';
+
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     AppComponent,
     UsersComponent,
-    FeedComponent,
-    AddComponent,
     LoginInComponent,
     HomeComponent,
     HoverDropDownDirective,
     AddTvshowComponent,
     TvEpisodesComponent,
-    ManageGenreComponent,
     AddGenreComponent,
     ManageTVShowsComponent,
-    ManageEpisodeComponent
+    ManageEpisodeComponent,
+    ManageMoviesComponent,
+    AddMovieComponent,
+    DisableControlDirective,
+    AddSeasonTvShowComponent,
+    ManageTrendingComponent
   ],
   imports: [
     BrowserModule,
@@ -84,12 +93,26 @@ import { ManageEpisodeComponent } from './components/manage-episode/manage-episo
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule, 
-    MatSortModule
-  ],
-  entryComponents: [
-    TvEpisodesComponent
+    MatSortModule,
+    MatTableResponsiveModule,
+    MatCheckboxModule
   ],
   providers: [
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: ['l', 'LL'],
+        },
+        display: {
+          dateInput: 'L',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
+      },
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: InterceptService, multi: true }
   ],
   bootstrap: [AppComponent]
 })

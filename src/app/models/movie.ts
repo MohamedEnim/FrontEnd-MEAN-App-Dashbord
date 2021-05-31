@@ -7,9 +7,11 @@ export class Movie {
     movieContry: string;
     movieUrl: string;
     movieReleaseDate: string;
-    movieDuration: string;
-    movieDescription: string;
+    duration: string;
+    descriptionEN: string;
+    descriptionAR: string;
+    movieTrending: boolean;
     moviePoster: string;
-    movieSubmitDate: string;
-    movieUpdateDate: string;
+    createAt: string;
+    updateAt: string;
 }

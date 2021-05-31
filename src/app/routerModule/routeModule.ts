@@ -3,12 +3,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { ManageEpisodeComponent } from '../components/manage-episode/manage-episode.component';
 import { AddGenreComponent } from '../components/add-genre/add-genre.component';
 import { AddTvshowComponent } from '../components/add-tvshow/add-tvshow.component';
-import { AddComponent } from '../components/add/add.component';
-import { FeedComponent } from '../components/feed/feed.component';
 import { HomeComponent } from '../components/home/home.component';
 import { LoginInComponent } from '../components/login-in/login-in.component';
-import { ManageGenreComponent } from '../components/manage-genre/manage-genre.component';
 import { ManageTVShowsComponent } from '../components/manage-tvshows/manage-tvshows.component';
+import { ManageMoviesComponent } from '../components/manage-movies/manage-movies.component';
+import { AddMovieComponent } from '../components/add-movie/add-movie.component';
+import { CheckFormGuard } from '../guards/check-form.guard';
+import { TvEpisodesComponent } from '../components/tv-episodes/tv-episodes.component';
+import { AddSeasonTvShowComponent } from '../components/add-season-tv-show/add-season-tv-show.component';
+import { ManageTrendingComponent } from '../components/manage-trending/manage-trending.component';
+import { AuthGuardGuard } from '../guards/auth-guard.guard';
 
 
 
@@ -16,19 +20,23 @@ import { ManageTVShowsComponent } from '../components/manage-tvshows/manage-tvsh
 
 const appRoutes: Routes =
 [
-    { path: 'home', component: HomeComponent , children: [
-        { path: 'addMovie', component: AddComponent }, 
-        { path: 'addTVShow', component: AddTvshowComponent },
-        { path: 'addGenre', component: AddGenreComponent },
-        { path: 'allMovies', component: FeedComponent },
-        { path: 'movies', component: FeedComponent },
-        { path: 'manageGenre', component: ManageGenreComponent },
+    { path: 'home', component: HomeComponent , canActivate: [AuthGuardGuard] , children: [
+        { path: 'addMovie', component: AddMovieComponent, canDeactivate: [CheckFormGuard] }, 
+        { path: 'addTVShow', component: AddTvshowComponent, canDeactivate: [CheckFormGuard]  },
+        { path: 'addGenre', component: AddGenreComponent, canDeactivate: [CheckFormGuard]  },
+        { path: 'addEpisode', component: TvEpisodesComponent },
+        { path: 'addSeason', component:  AddSeasonTvShowComponent },
+       
+
+        { path: 'allMovies', component: ManageMoviesComponent },
+       // { path: 'movies', component: FeedComponent },
+        { path: 'allTrending', component: ManageTrendingComponent },
         { path: 'allTVShows', component:  ManageTVShowsComponent },
         { path: 'allTVEpisodes', component:  ManageEpisodeComponent },
     ] },
    
     { path: 'login', component: LoginInComponent },
-    { path: '',   redirectTo: '/home', pathMatch: 'full' }
+    { path: '',   redirectTo: '/login', pathMatch: 'full' }
  
 ];
 

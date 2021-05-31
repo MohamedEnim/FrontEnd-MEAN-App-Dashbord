@@ -10,20 +10,17 @@ import { Movie } from 'src/app/models/movie';
 import { AddMovieService } from 'src/app/services/add-movie.service';
 import { GenresMoviesService } from 'src/app/services/genres-movies.service';
 
-
 @Component({
-  selector: 'app-feed',
-  templateUrl: './feed.component.html',
-  styleUrls: ['./feed.component.css'],
-  
+  selector: 'app-manage-trending',
+  templateUrl: './manage-trending.component.html',
+  styleUrls: ['./manage-trending.component.css']
 })
-export class FeedComponent implements OnInit, OnDestroy, AfterViewInit{
+export class ManageTrendingComponent implements OnInit {
 
-  
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort; 
 
-  displayedColumns: string[] = ['movieName', 'movieReleaseDate', 'movieGenres', 'url',  'movieSubmitDate', 'movieUpdateDate', 'update', 'remove'];
+  displayedColumns: string[] = ['movieName', 'movieReleaseDate', 'movieGenres', 'movieUrl',  'createAt', 'updateAt', 'actions'];
   dataSource: MatTableDataSource<Movie>;
   movies: Movie[] = [];
   sendMoviesSub: Subscription;
@@ -40,15 +37,14 @@ export class FeedComponent implements OnInit, OnDestroy, AfterViewInit{
     this.route.queryParamMap.pipe(switchMap((params: ParamMap) => {
       this.genreId = params.get('id');
       this.genreName = params.get('genre');
-      if(this.genreId !== null && this.genreName !== null){
-        console.log("genreMov");
+     /* if(this.genreId !== null && this.genreName !== null){
         return this.addMovieSErv.getMoviesByGenre(this.genreId, this.genreName);
-      }else {
-        return this.addMovieSErv.getMovies();
-      }
+      }else {*/
+        return this.addMovieSErv.getTrendingMovies();
+     // }
      
   })).subscribe((movies: Movie[]) => {
-    console.log(movies);
+   
     this.movies = movies;
     this.length = this.movies.length;
     this.dataSource = new MatTableDataSource<Movie>(movies);
@@ -89,9 +85,17 @@ export class FeedComponent implements OnInit, OnDestroy, AfterViewInit{
     this.addMovieSErv.onNavigateToAddMovie();
 }
 
+getYear(date: string){
+  return date.split('/')[2];
+}
+
+applyFilter(event: Event) {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
   ngOnDestroy(){
     this.sendMoviesSub.unsubscribe();
   }
-
 
 }
