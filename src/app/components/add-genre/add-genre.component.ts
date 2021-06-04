@@ -30,7 +30,6 @@ export class AddGenreComponent implements OnInit {
    
     
   canDeactivate(): boolean {
-    console.log(this.addGenreForm.valid)
       if(this.addGenreForm.valid === true){
         return false;
       } else{

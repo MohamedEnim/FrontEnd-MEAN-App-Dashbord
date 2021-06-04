@@ -8,6 +8,7 @@ export class TVEpisode {
     tvShowReleaseDate: string;
     tvEpisodeUrl: string;
     tvEpisodeNum: string;
+    tvShowGenres: [string];
     tvEpisodeLanguage: string;
     tvEpisodeContry: string;
     createdAt: string;

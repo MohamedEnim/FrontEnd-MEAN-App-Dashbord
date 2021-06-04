@@ -35,7 +35,8 @@
         </div>
 
         <div class="btn">
-             <button mat-stroked-button color="primary" [disabled]="!addTVEpisodeForm.valid">Submit</button>
+            <button mat-stroked-button type="button" (click)="onNavigateToTVEpisodes()" color="warn" >Go To Tv Episodes</button>
+             <button mat-stroked-button color="primary" style="margin-right: 5px;" [disabled]="!addTVEpisodeForm.valid">Submit</button>
          </div>
 
     </form>

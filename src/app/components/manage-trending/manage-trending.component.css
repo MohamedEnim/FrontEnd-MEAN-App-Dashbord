@@ -28,10 +28,7 @@
   .mat-header-cell {
     max-width: 300px;
   }
-  
-  .mat-focus-indicator{
-  padding: 0 !important;
-  }
+
   
   .btn-update{
   background-color: rgb(17, 209, 17);

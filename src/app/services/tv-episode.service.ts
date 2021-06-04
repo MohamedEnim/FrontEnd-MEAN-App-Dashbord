@@ -55,6 +55,7 @@ export class TvEpisodeService {
               tvShowReleaseDate: data.tvShowReleaseDate,
               tvEpisodeUrl: data.tvEpisodeUrl,
               tvEpisodeNum: data.tvEpisodeNum,
+              tvShowGenres: data.tvShowGenres,
               tvEpisodeLanguage: data.tvEpisodeLanguage,
               tvEpisodeContry: data.tvEpisodeContry,
               createdAt: data.createdAt,
@@ -72,6 +73,7 @@ export class TvEpisodeService {
               tvShowReleaseDate: responseData[0].tvShowReleaseDate,
               tvEpisodeUrl: responseData[0].tvEpisodeUrl,
               tvEpisodeNum: responseData[0].tvEpisodeNum,
+              tvShowGenres: responseData[0].tvShowGenres,
               tvEpisodeLanguage: responseData[0].tvEpisodeLanguage,
               tvEpisodeContry: responseData[0].tvEpisodeContry,
               createdAt: responseData[0].createdAt,
@@ -89,8 +91,8 @@ export class TvEpisodeService {
 
   getTimeStamp(){
     const now = new Date();
-    const date = now.getUTCDate()  + '-' + (now.getUTCMonth() + 1) + '-' + now.getUTCFullYear() ;
-    const time = now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds();
+    const date = now.getUTCDate()  + ',' + (now.getUTCMonth() + 1) + ',' + now.getUTCFullYear() ;
+    const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
      return (date + '/' + time);
   }
 /***/ 

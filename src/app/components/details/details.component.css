@@ -1,0 +1,128 @@
+/*********************Container Section**********************/
+.details__container{
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: absolute;
+    top: 70px;
+    width: 100%;
+  
+}
+/*****x*************************************************x***/
+/*****************Details Header Section*******************/
+.deatils-header{
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+/*****x*************************************************x***/
+/***************Details Header Right Section****************/
+.details__right{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.movieTable td {
+    text-align: left;
+    background: #fff;
+    padding: 8px;
+    border: 1px solid #eee;
+}
+
+.movie_title h1 {
+    margin: 10px;
+    font-weight: 400!important;
+}
+
+.full {
+    width: 100%!important;
+    box-sizing: border-box;
+}
+
+.nowrap {
+    width: 1px;
+    white-space: nowrap;
+}
+
+/*****x*************************************************x***/
+/***************Details Header Left Section****************/
+.details__left {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 60%;
+}
+
+.poster{
+    height: 300px;
+    margin-bottom: 10px;
+}
+
+.poster > img {
+    height: 300px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+
+.btn > a{
+    width: 100%;
+}
+/*****x*************************************************x***/
+/*******************Details Body Section*******************/
+
+.mbox {
+    position: relative;
+    display: block;
+    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pda {
+    padding: 10px;
+}
+
+.bdb {
+    border-bottom: 1px solid #ddd;
+}
+
+.mbox .hd {
+    background: #f9f9f9;
+     border-radius: 4px 4px 0 0; 
+}
+/*****x*************************************************x***/
+.close{
+    position: absolute;
+    right: 5px;
+}
+
+
+:host ::ng-deep button.mat-mini-fab.mat-accent {
+     background-color: unset!important; 
+     color: red;
+}
+
+.container{
+    position: relative;
+    box-sizing: border-box;
+}
+
+
+.episodes{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    margin-top: 20px;
+  }
+  
+  .episode{
+    margin: 3px;  
+  }
+
+  .selectEpisode{
+    border: 3px solid yellow;
+  }

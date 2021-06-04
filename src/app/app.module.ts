@@ -47,6 +47,7 @@ import { AddSeasonTvShowComponent } from './components/add-season-tv-show/add-se
 import { ManageTrendingComponent } from './components/manage-trending/manage-trending.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { InterceptService } from './services/intercept.service';
+import { DetailsComponent } from './components/details/details.component';
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { InterceptService } from './services/intercept.service';
     AddMovieComponent,
     DisableControlDirective,
     AddSeasonTvShowComponent,
-    ManageTrendingComponent
+    ManageTrendingComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -96,6 +98,9 @@ import { InterceptService } from './services/intercept.service';
     MatSortModule,
     MatTableResponsiveModule,
     MatCheckboxModule
+  ],
+  entryComponents: [
+    DetailsComponent
   ],
   providers: [
     {

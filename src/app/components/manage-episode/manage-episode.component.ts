@@ -10,6 +10,7 @@ import { TVEpisode } from 'src/app/models/tvEpisode';
 import { TVShow } from 'src/app/models/tvShow';
 import { TvEpisodeService } from 'src/app/services/tv-episode.service';
 import { TvShowService } from 'src/app/services/tv-show.service';
+import { DetailsComponent } from '../details/details.component';
 import { TvEpisodesComponent } from '../tv-episodes/tv-episodes.component';
 
 
@@ -39,6 +40,8 @@ export class ManageEpisodeComponent implements OnInit {
   tvShow: TVShow;
   tvShowEpsNum: string;
   epsArray: number[];
+  isSelected: number;
+  urlSelectedEpisode: string;
 
   constructor(private tvEpisodeSErv: TvEpisodeService, private route: ActivatedRoute, public dialog: MatDialog,
     private tvShowSErv: TvShowService) { }
@@ -65,12 +68,19 @@ export class ManageEpisodeComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   });
-   this.sendTVEpisodesSub = this.tvEpisodeSErv.sendTVEpisodes.subscribe((tvEpisodes: TVEpisode[]) =>{
+   this.sendTVEpisodesSub = this.tvEpisodeSErv.sendTVEpisodes.pipe(switchMap((tvEpisodes: TVEpisode[]) =>{
     this.tvEpisodes = tvEpisodes;
     this.length = this.tvEpisodes.length;
     this.dataSource = new MatTableDataSource<TVEpisode>(tvEpisodes);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    return this.tvShowSErv.getTVShowById(this.tvShowId);
+   })).subscribe((tvShow: TVShow) =>{
+    this.tvShow = tvShow;
+        this.tvShowName = this.tvShow.tvShowName;
+        this.tvShowSeason= this.tvShow.tvShowSeason;
+        this.tvShowEpsNum = this.tvShow.tvShowEpisodes;
+        this.epsArray = this.getEpisodesArray(this.tvShowEpsNum);
     });
   }
 
@@ -97,12 +107,30 @@ private getEpisodesArray(epsNumStr: string){
 }
 
 applyFilter(event: Event) {
-  const filterValue = (event.target as HTMLInputElement).value;
+  const filterValue = (event.target as HTMLInputElement).value.toString();
   this.dataSource.filter = filterValue.trim().toLowerCase();
 }
 
 onNavigateToAddSeason(){
   this.tvEpisodeSErv.onNavigateToAddSeason(this.tvShowId);
+}
+
+onTvEpisodeDetails(episode: TVEpisode){
+  let dialogRef = this.dialog.open(DetailsComponent, {
+    height: '520px',
+    width: '800px',
+    data: {
+      model: episode,
+      type: 'episode'
+    }
+  });
+}
+
+onSelectEpisode(episodeNumber: number){
+  this.isSelected = episodeNumber;
+  let tvEpisode = this.tvEpisodes.find(tvEpisode => tvEpisode.tvEpisodeNum === episodeNumber.toString());
+  this.urlSelectedEpisode = tvEpisode.tvEpisodeUrl;
+
 }
 
   ngOnDestroy(){

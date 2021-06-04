@@ -10,7 +10,7 @@
                 <input matInput
                  placeholder="Enter the name of the TV show"  
                  formControlName="name"
-                 >
+                 required>
                 <mat-error 
                 *ngIf="!addTVShowForm.get('name').valid && addTVShowForm.get('name').touched">Enter the name of the TV show</mat-error>
             </mat-form-field>
@@ -22,9 +22,9 @@
             <mat-label>Select the genre of the movie</mat-label>
             <mat-select 
             formControlName="genre"
-            multiple>
-                <mat-option *ngFor="let genre of genres" [value]="genre.name" 
-                >
+            multiple
+            required>
+                <mat-option *ngFor="let genre of genres" [value]="genre.name">
                 {{ genre.name }}
                 </mat-option>
             </mat-select>
@@ -39,7 +39,8 @@
                 <mat-label>Enter the language of the TV Show</mat-label>
                 <input matInput 
                 placeholder="Enter the language of the TV Show"
-                formControlName="language">
+                formControlName="language"
+                required>
                 <mat-error 
                 *ngIf="!addTVShowForm.get('language').valid && addTVShowForm.get('language').touched">Enter the language of theTV Show</mat-error>
               </mat-form-field>
@@ -52,7 +53,7 @@
                 <input matInput 
                 placeholder="Enter the contry of the TV Show"
                 formControlName="contry"
->
+                required>
                 <mat-error 
                 *ngIf="!addTVShowForm.get('contry').valid && addTVShowForm.get('contry').touched">Enter the contry of the TV Show</mat-error>
               </mat-form-field>
@@ -65,7 +66,8 @@
                 <input matInput 
                 placeholder="Enter the season of the TV Show"
                 formControlName="season"
-                type="number">
+                type="number"
+                required>
                 <mat-error 
                 *ngIf="!addTVShowForm.get('season').valid && addTVShowForm.get('season').touched">Enter the season of the TV Show</mat-error>
               </mat-form-field>
@@ -78,7 +80,8 @@
                 <mat-label>Enter the release date of the TV Show</mat-label>
                 <input matInput [matDatepicker]="picker"
                 placeholder="Enter the Release date of the TV Show"
-                formControlName="release">
+                formControlName="release"
+                required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error 
@@ -94,7 +97,8 @@
                 <input matInput 
                 placeholder="Enter How many Episodes in the TV Show"
                 formControlName="episode"
-                type="number">
+                type="number"
+                required>
                 <mat-error 
                 *ngIf="!addTVShowForm.get('episode').valid && addTVShowForm.get('episode').touched">Enter How many Episodes in the TV Show</mat-error>
               </mat-form-field>

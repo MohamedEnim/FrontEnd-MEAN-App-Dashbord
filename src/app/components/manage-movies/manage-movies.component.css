@@ -1,45 +1,12 @@
 
-
+/**************************Movie Container Section*************************/
+/***x*****************************************************************x***/
 .manage__movie-container{
     width: 100%;
   }
-  
-  
-  table {
-    width: 100%;
-  }
-  
-  .mat-column-actions {
-    text-align: right;
-  }
-  table {
-    width: 100%;
-  }
-  
-  .mat-form-field {
-    font-size: 14px;
-    width: 100%;
-  }
-  
-  /*td, th {
-    width: 25%;
-  }*/
-  
-  .mat-header-cell {
-    max-width: 300px;
-  }
-  
-  .mat-focus-indicator{
-  padding: 0 !important;
-  }
-  
-  .btn-update{
-  background-color: rgb(17, 209, 17);
-  color: white;
-  }
-  
-  
-  .header{
+ /***x*****************************************************************x***/  
+ /******************************Header Section****************************/
+ .header{
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
@@ -47,40 +14,51 @@
   justify-content: space-between;
   margin-bottom: 20px;
   padding: 10px;
-  border: 2px solid red;
   }
   :host::ng-deep .header .mat-form-field-wrapper{
-  padding-bottom: 0px !important;
+    padding-bottom: 0px !important;
   }
-  
-  .btn-add{
-    background-color: rgb(243, 243, 8);
-    color: white;
-    width: 100px;
-    height: 40px;
-    }
-  
+    
+.btn-add{
+  background-color: rgb(243, 243, 8);
+  color: white;
+  }
   .feed-form-group{
-  display: flex;
-  flex-direction: row;
-  box-sizing: border-box;
-  align-items: center;
-  min-width: 40%;
-  
-  border: 2px solid blue;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    align-items: center;
+    min-width: 40%;
   }
-  
   .search{
-  font-size: 18px;
-  padding: 0px 5px;
-  margin: 0px 5px;
-  font-weight: 400;
+    font-size: 18px;
+    padding: 0px 5px;
+    margin: 0px 5px;
+    font-weight: 400;
+  }
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
   }
   
+  
+  
+ /***x*****************************************************************x***/  
+ /*******************************Table Section****************************/ 
+  table {
+    width: 100%;
+  }
+  
+  .mat-column-actions {
+    text-align: right;
+  }
+   
+  .mat-header-cell {
+    max-width: 300px;
+  }
   ::ng-deep .mat-form-field-flex > .mat-form-field-infix { padding: 0.6em 0px !important;}
-  
-  
-  
+ /***x*****************************************************************x***/ 
+ 
   @media (max-width: 815px){
     .header{
       display: flex;
@@ -93,5 +71,4 @@
       border: 2px solid red;
       }
   }
-  
-  
+

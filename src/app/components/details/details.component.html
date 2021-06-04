@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="close">
+        <button mat-mini-fab  (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>  
+    <div class="details__container">
+        <div class="deatils-header">
+        <div class="details__left">
+            <div class="poster">
+                <img [src]="poster" alt="">
+            </div>
+            <div class="btn" *ngIf="data.type === 'movie' || data.type === 'episode'">
+                 <a mat-flat-button [href]="url" target="_blank" color="primary" ><mat-icon style="margin-right: 5px;">play_circle_filled</mat-icon>Watch</a>
+            </div>
+        </div>
+        <div class="details__right">
+            <div class="td vat">
+                <table class="movieTable full">
+                
+                <tbody>
+                <tr>
+                    <td colspan="2" class="movie_title">
+                    <h1>{{ name }} ({{ year }})</h1>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="nowrap">Language</td>
+                    <td>{{ language }}</td>
+                </tr>
+                
+            
+                <tr>
+                    <td>Genres</td>
+                    <td>{{ genres }}</td>
+                </tr>
+
+                <tr *ngIf="data.type === 'episode'">
+                    <td>Episode</td>
+                    <td>{{ episodeNum }}</td>
+                </tr>
+
+                        
+                <tr>
+                    <td class="nowrap">Contry</td>
+                    <td>{{ contry }}</td>
+                </tr>
+                
+                <tr *ngIf="data.type === 'movie'">
+                    <td>Duration</td>
+                    <td>{{ duration }} min</td>
+                </tr>
+                
+            
+                
+                </tbody>
+            </table>
+                </div>
+                <div class="episodes"  *ngIf="data.type === 'tvShow'">
+                    <a mat-mini-fab color="accent" *ngFor="let ep of epsArray" class="episode"
+                    [href]="urlSelectedEpisode" target="_blank" 
+                    (click)="onSelectEpisode(ep)" [ngClass]="{selectEpisode: ep === isSelected}">{{ ep }} </a>
+                  </div>
+        </div>
+    </div>
+    
+        <div class="mbox" *ngIf="data.type === 'movie'"> 
+            <div class="pda bdb hd"><strong>Description</strong>
+            </div> 
+            <div class="pda">
+                {{ description }}
+            </div> 
+        </div>
+    </div>
+</div>
+
+    

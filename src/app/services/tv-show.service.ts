@@ -109,7 +109,7 @@ export class TvShowService {
   getTimeStamp(){
     const now = new Date();
     const date = now.getUTCDate()  + '-' + (now.getUTCMonth() + 1) + '-' + now.getUTCFullYear() ;
-    const time = now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds();
+    const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
      return (date + '/' + time);
   }
 

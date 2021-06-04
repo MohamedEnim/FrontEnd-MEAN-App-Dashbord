@@ -92,7 +92,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
           language:  this.movieToUpdate.movieLanguage,
           contry: this.movieToUpdate.movieContry,
           url: this.movieToUpdate.movieUrl,
-          release: new Date(parseInt(date.year), parseInt(date.month), parseInt(date.day)),
+          release: new Date(parseInt(date.year), parseInt(date.month), parseInt(date.date)),
           duration: this.movieToUpdate.duration,
           descriptionEN: this.movieToUpdate.descriptionEN,
           descriptionAR: this.movieToUpdate.descriptionAR,
@@ -130,9 +130,6 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
 
   onSubmit(){
     
-    const { date, month, year } = this.addForm.value.release._i;
-    const dateTf =  date + ',' + month  +  ',' + year;
-
     let descriptionEN = this.addForm.value.descriptionEN? this.addForm.value.descriptionEN : '';
     let descriptionAR = this.addForm.value.descriptionAR? this.addForm.value.descriptionAR : '';
 
@@ -142,6 +139,8 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
     this.isTrending = true;
   }
     if (this.mode === "create") {
+      const { date, month, year } = this.addForm.value.release._i;
+      const dateTf = year  + ',' + month  +  ',' + date;
       let movie: Movie = {
         movieName: this.addForm.value.name,
         movieGenres: this.addForm.value.genre,
@@ -165,6 +164,10 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
       this.resetFormAddMovie(this.addForm); 
      });
     } else {
+      const yearUp = new Date(this.addForm.value.release.toString()).getFullYear();
+      const dateUp = new Date(this.addForm.value.release.toString()).getDate();
+      const monthUp = new Date(this.addForm.value.release.toString()).getMonth() + 1;
+      const dateTf = yearUp  + ',' + monthUp  +  ',' + dateUp;
      let movie: Movie = {
        _id: this.movieToUpdate._id,
         movieName: this.addForm.value.name,
@@ -243,13 +246,13 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
   }
 
   getStringToDate(dateStr: string){
-     let date = {
-      day: dateStr.split(',')[0],
-      month: dateStr.split(',')[1],
-      year: dateStr.split(',')[2],
-    }
-    return date
-  }
+    let date = {
+     year: dateStr.split(',')[0],
+     month: dateStr.split(',')[1],
+     date: dateStr.split(',')[2],
+   }
+   return date
+ }
   ngOnDestroy(): void {
   }
  

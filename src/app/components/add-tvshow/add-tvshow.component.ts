@@ -12,6 +12,8 @@ import { mimeType } from 'src/app/validators/mine-type.validator';
 import { TvEpisodesComponent } from '../tv-episodes/tv-episodes.component';
 import * as _moment from 'moment';
 import { ComponontCanDeactivate } from 'src/app/models/componont-can-deactivate';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 //import { default as _rollupMoment } from 'moment';
 
 const moment = _moment; //_rollupMoment || _moment;
@@ -19,7 +21,19 @@ const moment = _moment; //_rollupMoment || _moment;
 @Component({
   selector: 'app-add-tvshow',
   templateUrl: './add-tvshow.component.html',
-  styleUrls: ['./add-tvshow.component.css']
+  styleUrls: ['./add-tvshow.component.css'],
+  providers: [
+    
+    {
+      provide: DateAdapter, 
+      useClass: MomentDateAdapter, 
+      deps: [MAT_DATE_LOCALE]
+    },
+    {
+      provide: MAT_DATE_FORMATS, 
+      useValue: MAT_MOMENT_DATE_FORMATS
+    },
+  ],
 })
 export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
 
@@ -42,7 +56,7 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
       language:  new FormControl(null, Validators.required),
       contry: new FormControl(null, Validators.required),
       season: new FormControl(null, Validators.required),
-      release: new FormControl(null, Validators.required),
+      release: new FormControl(new Date(), Validators.required),
       episode: new FormControl(null, Validators.required),
       image: new FormControl(null, {
         validators: [Validators.required],
@@ -68,13 +82,14 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
     })).subscribe((data: any) => {
       if(this.mode === 'update'){
         this.tvShowToUpdate = data;
+        let date = this.getStringToDate(this.tvShowToUpdate.tvShowReleaseDate);
         this.addTVShowForm.setValue({
           name: this.tvShowToUpdate.tvShowName,
           genre: this.tvShowToUpdate.tvShowGenres,      
           language:  this.tvShowToUpdate.tvShowLanguage,
           contry: this.tvShowToUpdate.tvShowContry,
           season: this.tvShowToUpdate.tvShowSeason,
-          release: moment(this.tvShowToUpdate.tvShowReleaseDate),
+          release: new Date(  parseInt(date.year), parseInt(date.month), parseInt(date.date)),
           episode: this.tvShowToUpdate.tvShowEpisodes,
           image: this.tvShowToUpdate.tvShowPoster
         });
@@ -101,14 +116,17 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
    }
 
   onSubmit(){
+
     if (this.mode === "create") {
+      const { year, month,  date } = this.addTVShowForm.value.release._i;
+      const dateTf = year  + ',' + month  +  ',' + date;
       let tvShow: TVShow = {
         tvShowName: this.addTVShowForm.value.name,
         tvShowGenres: this.addTVShowForm.value.genre,
         tvShowLanguage: this.addTVShowForm.value.language,
         tvShowContry: this.addTVShowForm.value.contry,
         tvShowSeason: this.addTVShowForm.value.season,
-        tvShowReleaseDate: this.addTVShowForm.value.release,//.format("DD/MM/YYYY/hh.mm.ss"),
+        tvShowReleaseDate: dateTf,
         tvShowEpisodes: this.addTVShowForm.value.episode,
         tvShowPoster: this.addTVShowForm.value.image,
         createdAt: this.addTVShowSErv.getTimeStamp().toString(),
@@ -124,13 +142,15 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
 
         this.addTVShowSErv.onNavigateToAddEpisode(tvShow._id, 'create');
         this.resetFormAddTVShow(this.addTVShowForm);
-        console.log(this.addTVShowForm.valid);
-        console.log(this.addTVShowForm.get('language').valid);
 
       });
 
 
     } else {
+      const yearUp = new Date(this.addTVShowForm.value.release.toString()).getFullYear();
+      const dateUp = new Date(this.addTVShowForm.value.release.toString()).getDate();
+      const monthUp = new Date(this.addTVShowForm.value.release.toString()).getMonth() + 1;
+      const dateTf = yearUp  + ',' + monthUp  +  ',' + dateUp;
       const tvShow: TVShow = {
         _id: this.tvShowToUpdate._id,
         tvShowName: this.addTVShowForm.value.name,
@@ -138,7 +158,7 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
         tvShowLanguage: this.addTVShowForm.value.language,
         tvShowContry: this.addTVShowForm.value.contry,
         tvShowSeason: this.addTVShowForm.value.season,
-        tvShowReleaseDate: this.addTVShowForm.value.release,//.format("DD/MM/YYYY/hh.mm.ss"),
+        tvShowReleaseDate: dateTf,
         tvShowEpisodes: this.addTVShowForm.value.episode,
         tvShowPoster: this.addTVShowForm.value.image,
         createdAt: this.tvShowToUpdate.createdAt,
@@ -204,5 +224,12 @@ export class AddTvshowComponent implements OnInit, ComponontCanDeactivate  {
     this.addTVShowForm.get('episode').updateValueAndValidity();
   }
   
-
+  getStringToDate(dateStr: string){
+    let date = {
+     year: dateStr.split(',')[0],
+     month: dateStr.split(',')[1],
+     date: dateStr.split(',')[2],
+   }
+   return date
+ }
 }

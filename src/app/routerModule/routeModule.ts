@@ -24,8 +24,8 @@ const appRoutes: Routes =
         { path: 'addMovie', component: AddMovieComponent, canDeactivate: [CheckFormGuard] }, 
         { path: 'addTVShow', component: AddTvshowComponent, canDeactivate: [CheckFormGuard]  },
         { path: 'addGenre', component: AddGenreComponent, canDeactivate: [CheckFormGuard]  },
-        { path: 'addEpisode', component: TvEpisodesComponent },
-        { path: 'addSeason', component:  AddSeasonTvShowComponent },
+        { path: 'addEpisode', component: TvEpisodesComponent, canDeactivate: [CheckFormGuard]  },
+        { path: 'addSeason', component:  AddSeasonTvShowComponent, canDeactivate: [CheckFormGuard] },
        
 
         { path: 'allMovies', component: ManageMoviesComponent },
