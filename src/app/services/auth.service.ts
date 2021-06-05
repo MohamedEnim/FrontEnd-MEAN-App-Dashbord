@@ -32,8 +32,15 @@ export class AuthService {
   }
 
   logout() {
-    this.removeSession();
-    this.router.navigate(['/login']);
+    this.http.delete('http://localhost:3000/api/auth/logout/' +  this.getDecryptToken(this.getUserId()) , {
+      headers: {
+        'x-refresh-token': JSON.parse(this.getDecryptToken(this.getRefreshToken())) ,
+      },
+      observe: 'response'
+    }).subscribe((data) =>{
+      this.removeSession();
+      this.router.navigate(['/login']);
+    })
   }
 
   onNavigateToAllMovies(){
