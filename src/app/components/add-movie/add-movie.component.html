@@ -1,18 +1,18 @@
 
 <div class="add__container">
     <h1>{{ mode }} Movie</h1>
-    
+
     <form [formGroup]="addForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-        
+
         <div class="add__formGroupe">
             <label for="name">Name of the movie</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the name of the movie</mat-label>
                 <input matInput
-                 placeholder="Enter the Name"  
+                 placeholder="Enter the Name"
                  formControlName="name"
                  required>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('name').valid && addForm.get('name').touched">Enter the name of the movie</mat-error>
             </mat-form-field>
         </div>
@@ -21,7 +21,7 @@
             <label for="genre">Select genre of the movie</label>
             <mat-form-field appearance="outline" >
             <mat-label>Select the genre of the movie</mat-label>
-            <mat-select 
+            <mat-select
             formControlName="genre"
             multiple
             required>
@@ -34,17 +34,17 @@
             </mat-form-field>
         </div>
 
-    
+
 
         <div class="add__formGroupe">
             <label for="language">Language of the movie</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the language of the movie</mat-label>
-                <input matInput 
+                <input matInput
                 placeholder="Enter the language of the movie"
                 formControlName="language"
                 required>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('language').valid && addForm.get('language').touched">Enter the language of the movie</mat-error>
               </mat-form-field>
         </div>
@@ -53,11 +53,11 @@
             <label for="contry">Contry of the movie</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the contry of the movie</mat-label>
-                <input matInput 
+                <input matInput
                 placeholder="Enter the contry of the movie"
                 formControlName="contry"
                 required>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('contry').valid && addForm.get('contry').touched">Enter the contry of the movie</mat-error>
               </mat-form-field>
         </div>
@@ -66,11 +66,11 @@
             <label for="url">Url of the movie</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the Url of the movie</mat-label>
-                <input matInput 
+                <input matInput
                 placeholder="Enter the Url of the movie"
                 formControlName="url"
                 required>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('url').valid && addForm.get('url').touched">Enter the Url of the movie</mat-error>
               </mat-form-field>
         </div>
@@ -86,7 +86,7 @@
                 required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('release').valid && addForm.get('release').touched">Enter the Release date of the movie</mat-error>
               </mat-form-field>
 
@@ -96,13 +96,13 @@
             <label for="duration">Duration of the movie</label>
             <mat-form-field appearance="outline">
                 <mat-label>Enter the duration of the movie</mat-label>
-                <input matInput 
+                <input matInput
                 id="duration"
                 placeholder="Enter the duration of the movie"
                 formControlName="duration"
                 type="time"
                 required>
-                <mat-error 
+                <mat-error
                 *ngIf="!addForm.get('duration').valid && addForm.get('duration').touched">Enter the duration of the movie</mat-error>
               </mat-form-field>
         </div>
@@ -113,7 +113,7 @@
                     <mat-label>Enter the English description of the movie</mat-label>
                     <textarea matInput
                     id="descriptionEN"
-                    formControlName="descriptionEN" 
+                    formControlName="descriptionEN"
                     rows="4"></textarea>
                   </mat-form-field>
         </div>
@@ -123,7 +123,7 @@
                 <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>أدخل قصة الفيلم</mat-label>
                     <textarea  matInput
-                    formControlName="descriptionAR" 
+                    formControlName="descriptionAR"
                     rows="4"></textarea>
                   </mat-form-field>
         </div>
@@ -131,7 +131,7 @@
         <div class="add__formGroupe m_bottom">
             <label for="rating">Trending</label>
                 <mat-checkbox formControlName="trending"
-                >is The Movie Trending!</mat-checkbox>  
+                >is The Movie Trending!</mat-checkbox>
         </div>
 
 
@@ -143,13 +143,17 @@
         <div class="showPoster" *ngIf="imagePreview ">
             <img [src]="imagePreview" alt="">
         </div>
-        <div class="btn"> 
+        <div class="btn">
             <button mat-stroked-button type="button" (click)="onNavigateToAllMovies()" color="warn">Go To All Tv Movies</button>
-            <button mat-stroked-button color="primary" [disabled]="!addForm.valid" class="btn_submit">Submit</button>   
-        </div> 
+            <button mat-stroked-button color="primary" [disabled]="!addForm.valid" class="btn_submit">Submit</button>
+        </div>
     </form>
+  <div class="row">
+    <div fxLayout="column" *ngIf="showActionProgress" [className]="'mt-1 progress p-0'">
+      <div [className]="'indeterminate'"></div>
+    </div>
+  </div>
 </div>
 
 
 
-  

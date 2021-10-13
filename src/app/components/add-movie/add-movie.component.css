@@ -13,18 +13,18 @@ h1{
 /******************Form Group Section*********************/
 .add__formGroupe{
     display: flex;
-    flex-direction: column;   
+    flex-direction: column;
 }
 input[type="file"] {
     visibility: hidden;
-   
+
   }
 /****x***********************************************x****/
 /*****************Submit Back Btn Section*****************/
 .btn{
     display: flex;
     flex-direction: row-reverse;
-}  
+}
 
 .btn_submit{
     margin-right: 10px;
@@ -51,3 +51,67 @@ input[type="file"] {
 .m_bottom{
     margin-bottom: 15px;
 }
+
+.progress {
+  position: relative;
+  height: 5px !important;
+  display: block;
+  width: 100%;
+  background-color: #acece6;
+  border-radius: 2px;
+  background-clip: padding-box;
+  margin: 0.2rem 0 0.2rem 0;
+  overflow: hidden;
+}
+.determinate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: #26a69a;
+  transition: width 0.3s linear;
+}
+
+.determinate-red {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: #d63429;
+  transition: width 0.3s linear;
+}
+
+.indeterminate {
+  background-color: #26a69a;
+}
+
+.indeterminate-red {
+  background-color: #6874e7;
+}
+
+.indeterminate:before,
+.indeterminate-red:before {
+  content: "";
+  position: absolute;
+  background-color: inherit;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  will-change: left, right;
+  -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+  animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+.indeterminate:after,
+.indeterminate-red:after {
+  content: "";
+  position: absolute;
+  background-color: inherit;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  will-change: left, right;
+  -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+  -webkit-animation-delay: 1.15s;
+  animation-delay: 1.15s;
+}
+

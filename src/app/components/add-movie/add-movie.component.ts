@@ -21,20 +21,20 @@ import { ComponontCanDeactivate } from 'src/app/models/componont-can-deactivate'
   templateUrl: './add-movie.component.html',
   styleUrls: ['./add-movie.component.css'],
   providers: [
-    
+
     {
-      provide: DateAdapter, 
-      useClass: MomentDateAdapter, 
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE]
     },
     {
-      provide: MAT_DATE_FORMATS, 
+      provide: MAT_DATE_FORMATS,
       useValue: MAT_MOMENT_DATE_FORMATS
     },
   ],
 })
 export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactivate {
-  
+
   @ViewChild('photoInput') photoInput;
   addForm: FormGroup;
   genres: Genre[] = [];
@@ -44,17 +44,18 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
   movieToUpdate: Movie;
   isSubmited: boolean = false;
   isTrending: boolean = false;
+  showActionProgress: boolean = false;
 
   constructor(private genresMoviesSErv: GenresMoviesService, private addMovieSErv: AddMovieService,
     private route: ActivatedRoute) { }
- 
-  
+
+
 
   ngOnInit(): void {
-   
+
     this.addForm = new FormGroup({
       name: new FormControl(null, Validators.required),
-      genre: new FormControl([null], Validators.required),      
+      genre: new FormControl([null], Validators.required),
       language:  new FormControl(null, Validators.required),
       contry: new FormControl(null, Validators.required),
       url: new FormControl(null, Validators.required),
@@ -76,7 +77,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
       this.genres = genres;
       if(this.movieId !== null && this.mode !== null){
         this.mode = 'update';
-        return this.addMovieSErv.getMoviesById(this.movieId);    
+        return this.addMovieSErv.getMoviesById(this.movieId);
       }else {
         this.mode = 'create';
         return of(null);
@@ -88,7 +89,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
         let date = this.getStringToDate(this.movieToUpdate.movieReleaseDate);
         this.addForm.setValue({
           name: this.movieToUpdate.movieName,
-          genre: this.movieToUpdate.movieGenres,      
+          genre: this.movieToUpdate.movieGenres,
           language:  this.movieToUpdate.movieLanguage,
           contry: this.movieToUpdate.movieContry,
           url: this.movieToUpdate.movieUrl,
@@ -101,7 +102,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
         });
 
         this.imagePreview = this.movieToUpdate.moviePoster;
-      
+
       }else{
         this.addForm.reset();
     }
@@ -116,10 +117,10 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
     reader.onload = () => {
       this.imagePreview = reader.result as string;
     };
-    reader.readAsDataURL(file); 
+    reader.readAsDataURL(file);
   }
 
- 
+
  clearPictureAttachment() {
   this.photoInput.nativeElement.value = '';
  }
@@ -129,7 +130,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
  }
 
   onSubmit(){
-    
+    this.showActionProgress = true;
     let descriptionEN = this.addForm.value.descriptionEN? this.addForm.value.descriptionEN : '';
     let descriptionAR = this.addForm.value.descriptionAR? this.addForm.value.descriptionAR : '';
 
@@ -158,10 +159,11 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
       }
       this.isSubmited = true;
       this.addMovieSErv.addMovie(movie).subscribe((movie: Movie) => {
+      this.showActionProgress = false;
       this.isSubmited = false;
       this.clearPictureAttachment();
       this.imagePreview = null;
-      this.resetFormAddMovie(this.addForm); 
+      this.resetFormAddMovie(this.addForm);
      });
     } else {
       const yearUp = new Date(this.addForm.value.release.toString()).getFullYear();
@@ -184,23 +186,25 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
         createAt: this.movieToUpdate.createAt,
         updateAt: this.addMovieSErv.getTimeStamp().toString()
       }
-      
+
       this.isSubmited = true;
       if(movie.moviePoster === this.movieToUpdate.moviePoster){
-        this.addMovieSErv.updateMovieSamePoster(this.movieToUpdate._id, movie).subscribe((movie: Movie) => { 
+        this.addMovieSErv.updateMovieSamePoster(this.movieToUpdate._id, movie).subscribe((movie: Movie) => {
+          this.showActionProgress = false;
           this.addMovieSErv.onNavigateToAllMovies();
         });
       }else{
-        this.addMovieSErv.updateMovie(this.movieToUpdate._id, movie).subscribe((movie: Movie) => {     
+        this.addMovieSErv.updateMovie(this.movieToUpdate._id, movie).subscribe((movie: Movie) => {
+          this.showActionProgress = false;
           this.addMovieSErv.onNavigateToAllMovies();
         });
       }
-     
-    } 
+
+    }
   }
-  
+
   private resetFormAddMovie(formGroup: FormGroup) {
-    this.addForm.reset();  
+    this.addForm.reset();
     this.addForm.get('name').clearValidators();
     this.addForm.get('name').updateValueAndValidity();
     this.addForm.get('genre').clearValidators();
@@ -236,13 +240,13 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
     if(this.mode === "update"){
       if(this.addForm.valid === true && this.isSubmited === false){
         return true;
-      } 
+      }
       if(this.addForm.valid === true && this.isSubmited === true) {
         return true;
       }
     }
 
-   
+
   }
 
   getStringToDate(dateStr: string){
@@ -255,7 +259,7 @@ export class AddMovieComponent implements OnInit, OnDestroy, ComponontCanDeactiv
  }
   ngOnDestroy(): void {
   }
- 
+
 }
 
 
